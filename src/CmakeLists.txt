@@ -6,6 +6,7 @@ add_executable(space-invaders
     shader.cpp
     window.cpp
     texture.cpp
+    game.cpp
 )
 
 # Tell compiler where to find headers (../include)

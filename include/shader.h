@@ -20,4 +20,4 @@ private:
     bool validate_program(GLuint program);
 };
 
-#endif
+#endif  // SHADER_H

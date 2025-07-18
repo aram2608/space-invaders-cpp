@@ -7,10 +7,7 @@
 
 class Window {
 public:
-    // Constructor
     Window(int width, int height, const char* title);
-
-    // Deconstructor
     ~Window();
 
     GLFWwindow* get() const;
@@ -19,4 +16,4 @@ private:
     GLFWwindow* window;
 };
 
-#endif
+#endif  // WINDOW_H
