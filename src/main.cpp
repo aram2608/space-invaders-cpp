@@ -1,9 +1,11 @@
 #include <iostream>
 #include <cstddef>
-#include <include/buffer.h>
-#include <include/window.h>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <buffer.h>
+#include <shader.h>
+#include <sprite.h>
+#include <window.h>
 
 const char* getGLErrorString(GLenum err) {
     switch (err) {
@@ -25,13 +27,6 @@ inline void gl_debug(const char* file, int line) {
 
 void error_callback(int error, const char* description) {
     std::cerr << "GLFW Error [" << error << "]: " << description << '\n';
-}
-
-
-// Function to get color values
-uint32_t rgb_to_uint32(uint8_t r, uint8_t g, uint8_t b) {
-    // Red, green, and blue
-    return (r << 24) | (g << 16) | (b << 8) | 255;
 }
 
 int main(int argc, char* argv[]) {

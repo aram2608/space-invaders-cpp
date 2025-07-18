@@ -1,3 +1,4 @@
+// window.h
 #ifndef WINDOW_H
 #define WINDOW_H
 
@@ -6,7 +7,10 @@
 
 class Window {
 public:
+    // Constructor
     Window(int width, int height, const char* title);
+
+    // Deconstructor
     ~Window();
 
     GLFWwindow* get() const;

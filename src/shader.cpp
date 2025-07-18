@@ -1,70 +1,58 @@
+#include "shader.h"
 #include <iostream>
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
 
-class Shader {
-public:
-    Shader() {
-    const char* vertex_shader =
-    "\n"
-    "#version 330\n"
-    "\n"
-    "noperspective out vec2 TexCoord;\n"
-    "\n"
-    "void main(void){\n"
-    "\n"
-    "    TexCoord.x = (gl_VertexID == 2)? 2.0: 0.0;\n"
-    "    TexCoord.y = (gl_VertexID == 1)? 2.0: 0.0;\n"
-    "    \n"
-    "    gl_Position = vec4(2.0 * TexCoord - 1.0, 0.0, 1.0);\n"
-    "}\n";
+Shader::Shader(const char* vertex_src, const char* fragment_src) {
+    GLuint shader_v = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(shader_v, 1, &vertex_src, nullptr);
+    glCompileShader(shader_v);
+    validate_shader(shader_v, "vertex");
 
-    const char* fragment_shader =
-    "\n"
-    "#version 330\n"
-    "\n"
-    "uniform sampler2D buffer;\n"
-    "noperspective in vec2 TexCoord;\n"
-    "\n"
-    "out vec3 outColor;\n"
-    "\n"
-    "void main(void){\n"
-    "    outColor = texture(buffer, TexCoord).rgb;\n"
-    "}\n";
-    }
+    GLuint shader_f = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(shader_f, 1, &fragment_src, nullptr);
+    glCompileShader(shader_f);
+    validate_shader(shader_f, "fragment");
 
-    ~Shader() {
-    
-    }
+    program_id = glCreateProgram();
+    glAttachShader(program_id, shader_v);
+    glAttachShader(program_id, shader_f);
+    glLinkProgram(program_id);
 
-    void validate_shader(GLuint shader, const char* file = 0)
-{
-    static const unsigned int BUFFER_SIZE = 512;
-    char buffer[BUFFER_SIZE];
-    GLsizei length = 0;
+    validate_program(program_id);
 
-    glGetShaderInfoLog(shader, BUFFER_SIZE, &length, buffer);
-
-    if(length > 0) {
-        std::cout << ("Shader %d(%s) compile error: %s\n",
-            shader, (file ? file: ""), buffer);
-    }
+    glDeleteShader(shader_v);
+    glDeleteShader(shader_f);
 }
 
-    bool validate_program(GLuint program)
-    {
-        static const GLsizei BUFFER_SIZE = 512;
-        GLchar buffer[BUFFER_SIZE];
-        GLsizei length = 0;
+Shader::~Shader() {
+    glDeleteProgram(program_id);
+}
 
-        glGetProgramInfoLog(program, BUFFER_SIZE, &length, buffer);
+void Shader::use() const {
+    glUseProgram(program_id);
+}
 
-        if(length > 0)
-        {
-            printf("Program %d link error: %s\n", program, buffer);
-            return false;
-        }
+GLuint Shader::id() const {
+    return program_id;
+}
 
-        return true;
+bool Shader::validate_shader(GLuint shader, const char* label) {
+    char buffer[512];
+    GLsizei length;
+    glGetShaderInfoLog(shader, 512, &length, buffer);
+    if (length > 0) {
+        std::cerr << "Shader (" << label << ") error: " << buffer << std::endl;
+        return false;
     }
-};
+    return true;
+}
+
+bool Shader::validate_program(GLuint program) {
+    char buffer[512];
+    GLsizei length;
+    glGetProgramInfoLog(program, 512, &length, buffer);
+    if (length > 0) {
+        std::cerr << "Program link error: " << buffer << std::endl;
+        return false;
+    }
+    return true;
+}

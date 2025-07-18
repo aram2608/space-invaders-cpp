@@ -1,3 +1,4 @@
+// buffer.h
 #ifndef BUFFER_H
 #define BUFFER_H
 #include <cstddef>
@@ -13,16 +14,18 @@ public:
     apparently
     */
     Buffer(size_t width, size_t height);
+
     // Deconstructor
     ~Buffer();
 
+    // Method to clear buffer
     void clear(uint32_t color);
 
     size_t width, height;
     uint32_t* data;
 };
 
-// Optional utility function if still needed elsewhere
+// Function to get color values
 uint32_t rgb_to_uint32(uint8_t r, uint8_t g, uint8_t b);
 
 #endif
