@@ -20,9 +20,8 @@ inline void gl_debug(const char* file, int line) {
     }
 }
 
-void error_callback(int error, const char* description)
-{
-    fprintf(stderr, "Error: %s\n", description);
+void error_callback(int error, const char* description) {
+    std::cerr << "GLFW Error [" << error << "]: " << description << '\n';
 }
 
 class Window {
