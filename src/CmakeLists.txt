@@ -9,7 +9,11 @@ find_package(glfw3 CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
 find_package(GLEW REQUIRED)
 
-add_executable(space-invaders main.cpp)
+add_executable(space-invaders 
+            main.cpp
+            buffer.cpp
+            window.cpp
+            )
 
 # Link with vcpkg packages
 target_link_libraries(space-invaders PRIVATE glfw fmt::fmt GLEW::GLEW)
