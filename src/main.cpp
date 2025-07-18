@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstddef>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
@@ -24,8 +25,76 @@ void error_callback(int error, const char* description) {
     std::cerr << "GLFW Error [" << error << "]: " << description << '\n';
 }
 
+void validate_shader(GLuint shader, const char* file = 0)
+{
+    static const unsigned int BUFFER_SIZE = 512;
+    char buffer[BUFFER_SIZE];
+    GLsizei length = 0;
+
+    glGetShaderInfoLog(shader, BUFFER_SIZE, &length, buffer);
+
+    if(length > 0)
+    {
+        printf("Shader %d(%s) compile error: %s\n",
+            shader, (file ? file: ""), buffer);
+    }
+}
+
+bool validate_program(GLuint program)
+{
+    static const GLsizei BUFFER_SIZE = 512;
+    GLchar buffer[BUFFER_SIZE];
+    GLsizei length = 0;
+
+    glGetProgramInfoLog(program, BUFFER_SIZE, &length, buffer);
+
+    if(length > 0)
+    {
+        printf("Program %d link error: %s\n", program, buffer);
+        return false;
+    }
+
+    return true;
+}
+
+// Function to get color values
+uint32_t rgb_to_uint32(uint8_t r, uint8_t g, uint8_t b) {
+    // Red, green, and blue
+    return (r << 24) | (g << 16) | (b << 8) | 255;
+}
+
+// Function to clear buffer
+void buffer_clear(Buffer* buffer, uint32_t color) {
+    for(size_t i = 0; i < buffer->width * buffer->height; ++i) {
+        buffer->data[i] = color;
+    }
+}
+
+class Buffer {
+public:
+    /* 
+    Constructor for buffer, ie just a chunk of memory really
+    uint32_t is used to store 4 8 bit color values for each pixel
+
+    uint8_t could also be used but indexing an unsigned 32 bit integer is easier
+    apparently
+    */
+    Buffer(size_t width, size_t height, uint32_t data) {
+        uint32_t clear_color = rgb_to_uint32(0, 128, 0);
+        buffer.width  = buffer_width;
+        buffer.height = buffer_height;
+        buffer.data   = new uint32_t[buffer.width * buffer.height];
+        buffer_clear(&buffer, clear_color);
+    }
+
+    ~Buffer() {
+        delete Buffer;
+    }
+};
+
 class Window {
 public:
+    // Constructor
     Window(int width, int height, const char* title) {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -38,6 +107,7 @@ public:
         glfwMakeContextCurrent(window);
     }
 
+    // Deconstructor
     ~Window() {
         if (window) glfwDestroyWindow(window);
     }
@@ -82,22 +152,26 @@ int main(int argc, char* argv[]) {
         std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
         std::cout << "GLSL Version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
-        // Sets clear color, bright red
+        // Sets clear color for our buffer, used in glClear()
         glClearColor(1.0, 0.0, 0.0, 1.0);
 
         // Game loop
         while (!glfwWindowShouldClose(window.get())) {
             glClear(GL_COLOR_BUFFER_BIT);
+            // GL has two buffers, a front and back. The game loop swaps between these two constantly
             glfwSwapBuffers(window.get());
+            // We need to update any ongoing events
             glfwPollEvents();
         }
-    // Catch errors
+    // Catch errors and close program
     } catch (const std::exception& e) {
         std::cerr << "Fatal error: " << e.what() << std::endl;
         glfwTerminate();
         return -1;
     }
 
+    // Terminate our program cleanly, the class handles deconstruction for itself
+    // So we need to manually call glfwTerminate()
     glfwTerminate();
     return 0;
 }
