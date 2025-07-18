@@ -1,3 +1,4 @@
+// window.cpp
 #include "window.h"
 
 Window::Window(int width, int height, const char* title) {
