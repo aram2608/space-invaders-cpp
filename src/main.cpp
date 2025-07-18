@@ -51,6 +51,20 @@ void error_callback(int error, const char* description) {
     std::cerr << "GLFW Error [" << error << "]: " << description << '\n';
 }
 
+class Game {
+public:
+    Game(size_t width, size_t height);
+
+    void update();
+    void render(Buffer& buffer);
+
+private:
+    size_t width, height;
+    size_t num_aliens;
+    Alien* aliens;
+    Player player;
+};
+
 int main(int argc, char* argv[]) {
 
     // Sets our error callback
@@ -105,26 +119,19 @@ int main(int argc, char* argv[]) {
         glDisable(GL_DEPTH_TEST);
         glActiveTexture(GL_TEXTURE0);
 
-        // Sprite
-        const uint8_t alien_data[88] = {
-            0,0,1,0,0,0,0,0,1,0,0,
-            0,0,0,1,0,0,0,1,0,0,0,
-            0,0,1,1,1,1,1,1,1,0,0,
-            0,1,1,0,1,1,1,0,1,1,0,
-            1,1,1,1,1,1,1,1,1,1,1,
-            1,0,1,1,1,1,1,1,1,0,1,
-            1,0,1,0,0,0,0,0,1,0,1,
-            0,0,0,1,1,0,1,1,0,0,0
-        };
-        Sprite alien(11, 8, alien_data);
+        // Sprites
+        Alien alien;
+        Player player;
 
         uint32_t clear_color = rgb_to_uint32(0, 128, 0);
         uint32_t alien_color = rgb_to_uint32(128, 0, 0);
+        uint32_t player_color = rgb_to_uint32(0,0,250);
 
         // Game loop
         while (!glfwWindowShouldClose(window.get())) {
             buffer.clear(clear_color);
             alien.draw_to(buffer, 112, 128, alien_color);
+            player.draw_to(buffer, 100, 240, player_color);
 
             glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, buffer.width, buffer.height,
                             GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, buffer.data);

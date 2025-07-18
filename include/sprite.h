@@ -9,17 +9,29 @@
 class Sprite {
 public:
     Sprite(size_t width, size_t height, const uint8_t* raw_data);
-    ~Sprite();
+    virtual ~Sprite();
 
     size_t get_width() const;
     size_t get_height() const;
     const uint8_t* get_data() const;
 
-    void draw_to(Buffer& buffer, size_t x, size_t y, uint32_t color) const;
+    virtual void draw_to(Buffer& buffer, size_t x, size_t y, uint32_t color) const;
 
-private:
+protected:
     size_t width, height;
     uint8_t* data;
+};
+
+class Alien : public Sprite {
+public:
+    Alien();
+    ~Alien() override = default;
+};
+
+class Player : public Sprite {
+public:
+    Player();
+    ~Player() override = default;
 };
 
 #endif
