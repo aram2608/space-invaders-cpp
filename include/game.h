@@ -6,6 +6,7 @@
 #include "buffer.h"
 #include "sprite.h"
 #include "texture.h"
+#include <GLFW/glfw3.h>
 
 class Game {
 public:
@@ -14,15 +15,18 @@ public:
 
     void update();
     void render();
+    void handle_input(GLFWwindow* window);
 
 private:
     void update_animation();
     void move_player();
+    void draw_text();
 
     Buffer buffer;
     Texture texture;
 
     std::vector<Alien> aliens;
+    std::vector<std::pair<size_t, size_t>> bullets;
     Player player;
 
     size_t player_x;
@@ -33,6 +37,8 @@ private:
 
     Sprite alien_sprites[2];
     Sprite player_sprite;
+    Sprite bullet_sprite;
+    Sprite text_sprite;
 };
 
 #endif  // GAME_H

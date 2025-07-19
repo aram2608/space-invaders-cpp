@@ -77,6 +77,9 @@ int main() {
         // Game setup
         Game game(224, 256);  // Width and height of your logical resolution
 
+        // Player input
+        game.handle_input(window.get());
+
         // Main loop
         while (!glfwWindowShouldClose(window.get())) {
             game.update();
