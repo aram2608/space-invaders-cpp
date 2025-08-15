@@ -40,4 +40,5 @@
 # debug information files
 *.dwo
 
-si/
+build/
+CPP-Space-Invaders-Game-with-raylib/

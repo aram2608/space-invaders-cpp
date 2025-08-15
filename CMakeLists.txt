@@ -10,6 +10,9 @@ find_package(raylib 3.0 REQUIRED)
 find_package(glfw3 REQUIRED)
 
 add_executable(${PROJECT_NAME} src/main.cpp)
+
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/)
+
 target_link_libraries(${PROJECT_NAME} raylib glfw)
 
 # Checks if OSX and links appropriate frameworks (only required on MacOS)
