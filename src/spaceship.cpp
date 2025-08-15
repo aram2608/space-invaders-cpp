@@ -17,16 +17,28 @@ void SpaceShip::draw() {
 
 void SpaceShip::move_left() {
     position.x -= 7;
+    if (position.x < 0) {
+        position.x = 0;
+    }
 }
 
 void SpaceShip::move_right() {
     position.x += 7;
+    if (position.x > GetScreenWidth() - image.width) {
+        position.x = GetScreenWidth() - image.width;
+    }
 }
 
 void SpaceShip::move_up() {
     position.y -= 7;
+    if (position.y < 0) {
+        position.y = 0;
+    }
 }
 
 void SpaceShip::move_down() {
     position.y += 7;
+    if (position.y > GetScreenHeight() - image.height) {
+        position.y = GetScreenHeight() - image.height;
+    }
 }
