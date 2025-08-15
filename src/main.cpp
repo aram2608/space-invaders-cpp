@@ -1,5 +1,5 @@
 #include <raylib.h>
-#include "include/spaceship.hpp"
+#include "spaceship.hpp"
 
 // In raylib, Color{red, green, blue, alpha}
 

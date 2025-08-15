@@ -2,8 +2,9 @@
 
 SpaceShip::SpaceShip() {
     image = LoadTexture("assets/spaceship.png");
-    position.x = 100;
-    position.y = 100;
+    // Calculate starting point in middle of screen
+    position.x = (GetScreenWidth() - image.width ) / 2;
+    position.y = GetScreenHeight() - image.height;
 }
 
 SpaceShip::~SpaceShip() {
@@ -11,5 +12,5 @@ SpaceShip::~SpaceShip() {
 }
 
 void SpaceShip::draw() {
-    DrawTexture(image, position, WHITE);
+    DrawTexture(image, position.x, position.y, WHITE);
 }
