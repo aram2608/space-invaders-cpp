@@ -1,5 +1,5 @@
 #include <raylib.h>
-#include "spaceship.hpp"
+#include "game.hpp"
 
 // In raylib, Color{red, green, blue, alpha}
 
@@ -16,15 +16,19 @@ int main() {
     // Game FPS
     SetTargetFPS(60);
 
-    // Create our SpaceShip Object
-    SpaceShip ship;
+    // Create our Game object
+    Game game;
 
     // Game loop. Runs will the window is not closed
     while (!WindowShouldClose()) {
+
+        // Handles game inputs
+        game.handle_input();
+
         BeginDrawing();
             // Draw a clear grey background
             ClearBackground(GREY);
-            ship.draw();
+            game.draw();
 
         EndDrawing();
     }

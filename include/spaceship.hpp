@@ -8,6 +8,8 @@ class SpaceShip {
         void draw();
         void move_left();
         void move_right();
+        void move_up();
+        void move_down();
         void fire_laser();
         // Deconstructor
         ~SpaceShip();

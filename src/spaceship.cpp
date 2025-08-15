@@ -14,3 +14,19 @@ SpaceShip::~SpaceShip() {
 void SpaceShip::draw() {
     DrawTexture(image, position.x, position.y, WHITE);
 }
+
+void SpaceShip::move_left() {
+    position.x -= 7;
+}
+
+void SpaceShip::move_right() {
+    position.x += 7;
+}
+
+void SpaceShip::move_up() {
+    position.y -= 7;
+}
+
+void SpaceShip::move_down() {
+    position.y += 7;
+}
