@@ -4,8 +4,7 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/Users/ja1473/projects/dev/tools/vcpkg/installed/arm64-osx/include",
-                "${workspaceFolder}/src/include"
+                "/Users/ja1473/dev/tools/vcpkg/installed/arm64-osx/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",

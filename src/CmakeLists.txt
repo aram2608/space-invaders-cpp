@@ -1,18 +1,6 @@
 # All source files in your project
 add_executable(space-invaders
     main.cpp
-    buffer.cpp
-    sprite.cpp
-    shader.cpp
-    window.cpp
-    texture.cpp
-    game.cpp
-)
-
-# Tell compiler where to find headers (../include)
-target_include_directories(space-invaders
-    PRIVATE
-        ${PROJECT_SOURCE_DIR}/include
 )
 
 # Link against libraries from vcpkg or system install
