@@ -161,12 +161,12 @@ void Game::move_aliens() {
     // Move aliens down once the edge of screen is met
     for(auto& alien: aliens) {
         // Right side of screen
-        if(alien.position.x + alien.alien_images[alien.type - 1].width > GetScreenWidth()) {
+        if(alien.position.x + alien.alien_images[alien.type - 1].width > GetScreenWidth() - 25) {
             alien_dir = -1;
             aliens_down(4);
         }
         // Left side of screen
-        if(alien.position.x < 0) {
+        if(alien.position.x < 25) {
             alien_dir = 1;
             aliens_down(4);
         }

@@ -22,16 +22,16 @@ void SpaceShip::draw() {
 // Function to change x_coord left
 void SpaceShip::move_left() {
     position.x -= 7;
-    if (position.x < 0 + 15) {
-        position.x = 0 + 15;
+    if (position.x < 25) {
+        position.x = 25;
     }
 }
 
 // Function to change x_coord right
 void SpaceShip::move_right() {
     position.x += 7;
-    if (position.x > GetScreenWidth() - image.width - 15) {
-        position.x = GetScreenWidth() - image.width - 15;
+    if (position.x > GetScreenWidth() - image.width - 25) {
+        position.x = GetScreenWidth() - image.width - 25;
     }
 }
 
