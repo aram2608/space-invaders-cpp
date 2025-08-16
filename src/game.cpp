@@ -4,12 +4,13 @@
 
 // Constructor - Game
 Game::Game() {
-    music = LoadMusicStream("audio/bgm.ogg");
+    music = LoadMusicStream("audio/bgm_loud.ogg");
     explosion_sound = LoadSound("audio/explosion.ogg");
     game_over_sound = LoadSound("audio/game_over.ogg");
     PlayMusicStream(music);
     init();
     new_game = 0;
+    state = GameState::Title;
 }
 
 // Deconstructor - Game
@@ -148,17 +149,11 @@ std::vector<Alien> Game::create_fleet() {
 // Function to handle IO logic for game events
 void Game::handle_input() {
     if(run) {
-        if(IsKeyDown(KEY_LEFT)) {
-            ship.move_left();
-        } else if (IsKeyDown(KEY_RIGHT)) {
-            ship.move_right();
-        } else if (IsKeyDown(KEY_UP)) {
-            ship.move_up();
-        } else if (IsKeyDown(KEY_DOWN)) {
-            ship.move_down();
-        } else if (IsKeyDown(KEY_SPACE)) {
-            ship.fire_laser();
-        }
+        if(IsKeyDown(KEY_LEFT))     ship.move_left(); 
+        if (IsKeyDown(KEY_RIGHT))   ship.move_right();
+        if (IsKeyDown(KEY_UP))      ship.move_up();
+        if (IsKeyDown(KEY_DOWN))    ship.move_down();
+        if (IsKeyDown(KEY_SPACE))   ship.fire_laser();
     } else {
         // Resets and initializes new game
         if(IsKeyDown(KEY_ENTER)) {
@@ -368,7 +363,7 @@ void Game::score_check() {
 void Game::save_high_scr(int high_scr) {
     std::ofstream high_scr_file("score/highscore.txt");
     if(high_scr_file.is_open()) {
-    high_scr_file << high_score;
+    high_scr_file << high_scr;
     high_scr_file.close();
     } else {
         std::cerr << "Failed to save highscore to file" << std::endl;
@@ -394,4 +389,33 @@ std::vector<Alien> Game::new_level() {
         level ++;
     }
     return aliens;
+}
+
+// Function to handle title game state
+void Game::update_title() {
+    if(IsKeyPressed(KEY_ENTER)) {
+        init();
+        PlayMusicStream(music);
+        state = GameState::Playing;
+    }
+}
+
+// Function to handle playing game state
+void Game::update_playing() {
+    handle_input();
+    update();
+    if(lives <= 0) {
+        StopMusicStream(music);
+        state = GameState::GameOver;
+    }
+}
+
+// Function to handle playing game state
+void Game::update_gameover() {
+    if(IsKeyPressed(KEY_ENTER)) {
+        reset();
+        init();
+        PlayMusicStream(music);
+        state = GameState::Playing;
+    }
 }

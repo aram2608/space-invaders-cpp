@@ -4,6 +4,9 @@
 #include "aliens.hpp"
 #include "mystery_ship.hpp"
 
+// Enum class to handle game states
+enum class GameState { Title, Playing, Paused, GameOver };
+
 class Game {
 public:
     // Constructor - Game
@@ -23,7 +26,10 @@ public:
     int high_score;
     int level;
     int new_game;
+
+    GameState state = GameState::Title;
     Music music;
+
 private:
     // Function to delete lasers to protect memory resources
     void delete_laser();
@@ -53,6 +59,12 @@ private:
     int load_score_file();
     // Function to progress to new level
     std::vector<Alien> new_level();
+    // Function to handle title game state
+    void update_title();
+    // Function to handle playing game state
+    void update_playing();
+    // Function to handle gameover state
+    void update_gameover();
 
     SpaceShip ship;
     std::vector<Obstacle> obstacles;
