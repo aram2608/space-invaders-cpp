@@ -29,7 +29,7 @@ void Laser::update() {
     position.y += speed;
     // Inactivates lasers given y_coords, catches both ship and alien lasers
     if (active) {
-        if (position.y > GetScreenHeight() || position.y < 0) {
+        if (position.y > GetScreenHeight() - 100 || position.y < 25) {
             active = false;
         }
     }
