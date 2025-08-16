@@ -25,11 +25,11 @@ Just make sure to always unload the texture to not leak memory
 
 */
 
-// Constants
-Color GREY = {29, 29, 27, 255};
-
 int main() {
-    // Hard codes the size for our game
+
+    // Constants
+    Color grey = {29, 29, 27, 255};
+    Color yellow = {243, 216, 63, 255};
     int off_set = 50;
     int window_w = 750;
     int window_h = 700;
@@ -51,8 +51,10 @@ int main() {
 
         // Main logic for drawing to game window
         BeginDrawing();
-            // Draw a clear grey background
-            ClearBackground(GREY);
+            // Draw UI
+            ClearBackground(grey);
+            DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, yellow);
+
             // Draw all defined game assets
             game.draw();
         EndDrawing();

@@ -5,7 +5,7 @@ SpaceShip::SpaceShip() {
     image = LoadTexture("assets/spaceship.png");
     // Calculate starting point in middle of screen
     position.x = (GetScreenWidth() - image.width ) / 2;
-    position.y = GetScreenHeight() - image.height;
+    position.y = GetScreenHeight() - image.height - 100;
     fire_time = 0;
 }
 
@@ -22,32 +22,32 @@ void SpaceShip::draw() {
 // Function to change x_coord left
 void SpaceShip::move_left() {
     position.x -= 7;
-    if (position.x < 0) {
-        position.x = 0;
+    if (position.x < 0 + 15) {
+        position.x = 0 + 15;
     }
 }
 
 // Function to change x_coord right
 void SpaceShip::move_right() {
     position.x += 7;
-    if (position.x > GetScreenWidth() - image.width) {
-        position.x = GetScreenWidth() - image.width;
+    if (position.x > GetScreenWidth() - image.width - 15) {
+        position.x = GetScreenWidth() - image.width - 15;
     }
 }
 
 // Function to change y_coord up
 void SpaceShip::move_up() {
     position.y -= 7;
-    if (position.y < 0) {
-        position.y = 0;
+    if (position.y < 0 + 25) {
+        position.y = 0 + 25;
     }
 }
 
 // Function to change y_coord down
 void SpaceShip::move_down() {
     position.y += 7;
-    if (position.y > GetScreenHeight() - image.height) {
-        position.y = GetScreenHeight() - image.height;
+    if (position.y > GetScreenHeight() - image.height - 100) {
+        position.y = GetScreenHeight() - image.height - 100;
     }
 }
 
@@ -73,6 +73,6 @@ Rectangle SpaceShip::get_rect() {
 // Function to reset spaceship
 void SpaceShip::reset() {
     position.x = (GetScreenWidth() - image.width ) / 2;
-    position.y = GetScreenHeight() - image.height;
+    position.y = GetScreenHeight() - image.height - 100;
     lasers.clear();
 }
