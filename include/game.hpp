@@ -21,6 +21,7 @@ public:
     bool run;
     int score;
     int high_score;
+    int level;
     Music music;
 private:
     // Function to delete lasers to protect memory resources
@@ -49,6 +50,8 @@ private:
     void save_high_scr(int high_scr);
     // Function to load a high score at start of game from text file
     int load_score_file();
+    // Function to progress to new level
+    std::vector<Alien> new_level();
 
     SpaceShip ship;
     std::vector<Obstacle> obstacles;

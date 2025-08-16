@@ -41,6 +41,17 @@ std::string format_trail_zeros(int number, int width) {
     return num_text = std::string(trailing_zeros, '0') + num_text;
 }
 
+// Function to reformat level displayed on UI
+std::string format_level(int number) {
+    if(number < 10) {
+        std::string num_text = std::to_string(number);
+        return num_text = '0' + num_text;
+    } else {
+        std::string num_text = std::to_string(number);
+        return num_text;
+    }
+}
+
 int main() {
 
     // Constants //
@@ -49,6 +60,7 @@ int main() {
     int off_set = 50;
     int window_w = 750;
     int window_h = 700;
+    std::string level_display = "LEVEL";
 
     // Game window Audio Device //
     // INITIALIZE FIRST BEFORE LOADING GPU RESOURCES //
@@ -83,10 +95,12 @@ int main() {
             DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, yellow);
             DrawLineEx({25, 730}, {775, 730}, 3, yellow);
             if(game.run) {
-                DrawTextEx(font, "LEVEL 01", {565, 740}, 34, 2, yellow);
-            } else {
-                DrawTextEx(font, "GAME OVER", {565, 740}, 34, 2, yellow);
-            }
+                    std::string level_num = format_level(game.level);
+                    std::string level = level_display + " " + level_num;
+                    DrawTextEx(font, level.c_str(), {565, 740}, 34, 2, yellow);
+                } else {
+                    DrawTextEx(font, "GAME OVER", {565, 740}, 34, 2, yellow);
+                }
 
             // Lives remaining
             float x = 50.0;

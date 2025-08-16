@@ -49,11 +49,9 @@ void Game::update() {
 
         // Collision handling logic
         check_collisions();
-    } else {
-        if(IsKeyDown(KEY_ENTER)) {
-            reset();
-            init();
-        }
+
+        // Check aliens
+        new_level();
     }
 }
 
@@ -157,6 +155,13 @@ void Game::handle_input() {
             ship.move_down();
         } else if (IsKeyDown(KEY_SPACE)) {
             ship.fire_laser();
+        }
+    } else {
+        // Resets and initializes new game
+        if(IsKeyDown(KEY_ENTER)) {
+            reset();
+            init();
+            run = true;
         }
     }
 }
@@ -321,15 +326,16 @@ void Game::check_collisions() {
 // Function to initialize game parameters
 void Game::init() {
     obstacles = make_obs();
-    aliens = create_fleet();
+    aliens = new_level();
     alien_dir = 1;
     last_al_laser_time = 0.0;
     lst_myst_spwn = 0.0;
     myst_ship_intv = GetRandomValue(10, 20);
     lives = 3;
-    run = true;
+    run = false;
     score = 0;
     high_score = load_score_file();
+    level = 1;
 }
 
 // Function to reset game after game over
@@ -374,4 +380,13 @@ int Game::load_score_file() {
         std::cerr << "Failed to load highscore from file" << std::endl;
     }
     return loaded_high_scr;
+}
+
+// Function to progress to new level
+std::vector<Alien> Game::new_level() {
+    if(aliens.empty()) {
+        aliens = create_fleet();
+        level ++;
+    }
+    return aliens;
 }
