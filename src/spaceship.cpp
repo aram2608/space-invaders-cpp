@@ -45,6 +45,7 @@ void SpaceShip::move_down() {
 }
 
 void SpaceShip::fire_laser() {
+    // Fires a laser with a wait time of 350 ms between shot
     if(GetTime() - fire_time >= 0.35) {
     lasers.push_back(Laser({position.x + image.width / 2 - 2, position.y},-6));
     fire_time = GetTime();
