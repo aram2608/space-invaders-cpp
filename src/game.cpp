@@ -7,6 +7,8 @@ Game::Game() {
     aliens = create_fleet();
     alien_dir = 1;
     last_al_laser_time = 0.0;
+    lst_myst_spwn = 0.0;
+    myst_ship_intv = GetRandomValue(10, 20);
 }
 
 // Deconstructor - Game
@@ -16,6 +18,14 @@ Game::~Game() {
 
 // Function to update the events on screen
 void Game::update() {
+    // Logic to handling spawn time of mystery ship
+    double curr_t = GetTime();
+    if(curr_t - lst_myst_spwn > myst_ship_intv) {
+        mystery_ship.spawn();
+        lst_myst_spwn = GetTime();
+        myst_ship_intv = GetRandomValue(10, 20);
+    }
+
     // Iterate over vector of lasers and update positions
     for(auto& laser: ship.lasers) {
         laser.update();
@@ -32,11 +42,13 @@ void Game::update() {
 
     // Clean up lasers that fly off screen
     delete_laser();
+    mystery_ship.update();
 }
 
 // Function to draw events onto game window
 void Game::draw() {
     ship.draw();
+    mystery_ship.draw();
 
     // Iterate over vector of lasers and draw to screen
     for(auto& laser: ship.lasers) {

@@ -5,7 +5,7 @@
 - [x] Lasers
 - [x] Obstacles
 - [x] Aliens
-- [] Mystery ship
+- [x] Mystery ship
 - [] Check for collisions
 - [] Game over
 - [] Scoring

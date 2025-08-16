@@ -2,6 +2,7 @@
 #include "spaceship.hpp"
 #include "obstacle.hpp"
 #include "aliens.hpp"
+#include "mystery_ship.hpp"
 
 class Game {
 public:
@@ -33,8 +34,11 @@ private:
     SpaceShip ship;
     std::vector<Obstacle> obstacles;
     std::vector<Alien> aliens;
+    MysteryShip mystery_ship;
     int alien_dir;
     std::vector<Laser> al_laser;
     constexpr static float al_shot_intv = 0.35;
     float last_al_laser_time;
+    float myst_ship_intv;
+    float lst_myst_spwn;
 };
