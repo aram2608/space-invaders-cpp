@@ -4,7 +4,7 @@
 // Constructor
 Game::Game() {
     obstacles = make_obs();
-    aliens = make_alien();
+    aliens = create_fleet();
     alien_dir = 1;
     last_al_laser_time = 0.0;
 }
@@ -14,6 +14,7 @@ Game::~Game() {
     Alien::unload_images();
 }
 
+// Function to update the events on screen
 void Game::update() {
     // Iterate over vector of lasers and update positions
     for(auto& laser: ship.lasers) {
@@ -33,6 +34,7 @@ void Game::update() {
     delete_laser();
 }
 
+// Function to draw events onto game window
 void Game::draw() {
     ship.draw();
 
@@ -57,8 +59,9 @@ void Game::draw() {
     }
 }
 
+// Function to delete lasers to protect memory resources
 void Game::delete_laser() {
-    // Iterator to loop through the vector and remove any inactive lasers
+    // Iterator to loop through the vector and remove any inactive ship lasers
     for(auto it = ship.lasers.begin(); it != ship.lasers.end();) {
         if(!it -> active) {
             it = ship.lasers.erase(it);
@@ -66,8 +69,18 @@ void Game::delete_laser() {
             ++ it;
         }
     }
+
+    // Iterator to loop through the vector and remove any inactive alien lasers
+    for(auto it = al_laser.begin(); it != al_laser.end();) {
+        if(!it -> active) {
+            it = al_laser.erase(it);
+        } else {
+            ++ it;
+        }
+    }
 }
 
+// Function to return a vector of obstacles for the game window
 std::vector<Obstacle> Game::make_obs() {
     // Calculate obstacle width and gaps between obstacles
     int obs_w = Obstacle::grid[0].size() * 3;
@@ -81,8 +94,10 @@ std::vector<Obstacle> Game::make_obs() {
     return obstacles;
 }
 
-std::vector<Alien> Game::make_alien() {
+// Function to create a vector of aliens to spawn a fleet into game window
+std::vector<Alien> Game::create_fleet() {
     std::vector<Alien> aliens;
+    // Iterate over a 5 row x 11 column grid to create a fleet of 55 aliens
     for(int row = 0; row < 5; row++) {
         for(int column = 0; column < 11; column++) {
 
