@@ -84,8 +84,14 @@ int main() {
         UpdateMusicStream(game.music);
 
         // Handles game inputs
-        game.handle_input();
-        game.update();
+        //game.handle_input();
+        //game.update();
+
+        switch (game.state) {
+            case GameState::Title: game.update_title(); break;
+            case GameState::Playing: game.update_playing(); break;
+            case GameState::GameOver: game.update_gameover(); break;
+        }
 
         // Main logic for drawing to game window
         BeginDrawing();

@@ -395,7 +395,6 @@ std::vector<Alien> Game::new_level() {
 void Game::update_title() {
     if(IsKeyPressed(KEY_ENTER)) {
         init();
-        PlayMusicStream(music);
         state = GameState::Playing;
     }
 }
@@ -405,8 +404,8 @@ void Game::update_playing() {
     handle_input();
     update();
     if(lives <= 0) {
-        StopMusicStream(music);
         state = GameState::GameOver;
+        game_over();
     }
 }
 
@@ -415,7 +414,6 @@ void Game::update_gameover() {
     if(IsKeyPressed(KEY_ENTER)) {
         reset();
         init();
-        PlayMusicStream(music);
         state = GameState::Playing;
     }
 }
