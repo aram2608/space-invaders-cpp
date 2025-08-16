@@ -1,7 +1,6 @@
 #include <raylib.h>
 #include <string>
 #include "game.hpp"
-#include "button.hpp"
 
 /* NOTES
 ~~~~~~~~~~ raylib ~~~~~~~~~~
