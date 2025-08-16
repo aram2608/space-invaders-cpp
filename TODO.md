@@ -3,7 +3,7 @@
 - [x] Setup game loop
 - [x] Create spaceships
 - [x] Lasers
-- [] Obstacles
+- [x] Obstacles
 - [] Aliens
 - [] Mystery ship
 - [] Check for collisions

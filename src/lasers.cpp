@@ -8,6 +8,7 @@ Laser::Laser(Vector2 position, int speed) {
 }
 
 void Laser::draw() {
+    // Draw a 4x15 green laser off the position
     if(active) DrawRectangle(position.x, position.y, 4, 15, Color{0, 128, 0, 255});
 }
 
@@ -16,7 +17,6 @@ void Laser::update() {
     if (active) {
         if (position.y > GetScreenHeight() || position.y < 0) {
             active = false;
-            std::cout << "Laser Inactive" << std::endl;
         }
     }
 }

@@ -3,6 +3,7 @@
 
 Game::Game() {
     obstacles = make_obs();
+    aliens = make_alien();
 }
 
 Game::~Game() {
@@ -29,6 +30,11 @@ void Game::draw() {
     for(auto& obs: obstacles) {
         obs.draw();
     }
+
+    // Iterate over a vector of aliens and draw to screen
+    for(auto& alien: aliens) {
+        alien.draw();
+    }
 }
 
 void Game::delete_laser() {
@@ -54,6 +60,19 @@ std::vector<Obstacle> Game::make_obs() {
         obstacles.push_back(Obstacle({off_x, float(GetScreenHeight() - 100)}));
     }
     return obstacles;
+}
+
+std::vector<Alien> Game::make_alien() {
+    std::vector<Alien> aliens;
+    for(int row = 0; row < 5; row++) {
+        for(int column = 0; column < 11; column++) {
+            // Calculate x and y by an arbitrary cell_size of 55
+            float x = column * 55;
+            float y = row * 55;
+            aliens.push_back(Alien(1, {x, y}));
+        }
+    }
+    return aliens;
 }
 
 void Game::handle_input() {
