@@ -4,7 +4,7 @@
 - [x] Create spaceships
 - [x] Lasers
 - [x] Obstacles
-- [] Aliens
+- [x] Aliens
 - [] Mystery ship
 - [] Check for collisions
 - [] Game over
