@@ -38,7 +38,7 @@ private:
     std::vector<Alien> aliens;
     MysteryShip mystery_ship;
     int alien_dir;
-    std::vector<Laser> al_laser;
+    std::vector<Laser> al_lasers;
     constexpr static float al_shot_intv = 0.35;
     float last_al_laser_time;
     float myst_ship_intv;

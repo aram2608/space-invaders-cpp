@@ -36,7 +36,7 @@ void Game::update() {
     aliens_shoot();
 
     // Update alien laser positions
-    for(auto& laser: al_laser) {
+    for(auto& laser: al_lasers) {
         laser.update();
     }
 
@@ -69,7 +69,7 @@ void Game::draw() {
     }
 
     // Iterate over a vector of alien lasers and draw to screen
-    for(auto& laser: al_laser) {
+    for(auto& laser: al_lasers) {
         laser.draw();
     }
 }
@@ -86,9 +86,9 @@ void Game::delete_laser() {
     }
 
     // Iterator to loop through the vector and remove any inactive alien lasers
-    for(auto it = al_laser.begin(); it != al_laser.end();) {
+    for(auto it = al_lasers.begin(); it != al_lasers.end();) {
         if(!it -> active) {
-            it = al_laser.erase(it);
+            it = al_lasers.erase(it);
         } else {
             ++ it;
         }
@@ -189,7 +189,7 @@ void Game::aliens_shoot() {
         Alien& alien = aliens[rand_idx];
 
         // Vector {x_coord, y_coord} calculations with a laser speed of 6 pixels
-        al_laser.push_back(Laser(
+        al_lasers.push_back(Laser(
             {alien.position.x + alien.alien_images[alien.type - 1].width / 2, 
             alien.position.y + alien.alien_images[alien.type - 1].height}, 6)
         );
@@ -225,9 +225,14 @@ void Game::check_collisions() {
                 }
             }
         }
+        // Check laser/mystery ship collisions
+        if(CheckCollisionRecs(laser.get_rect(), mystery_ship.get_rect())) {
+            laser.active = false;
+            mystery_ship.alive = false;
+        }
     }
     // Alien lasers
-    for(auto& laser: al_laser) {
+    for(auto& laser: al_lasers) {
         // Iterate over obstacles vector to check for collisions
         for(auto& obs: obstacles) {
             auto it = obs.blocks.begin();
