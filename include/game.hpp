@@ -22,5 +22,14 @@ private:
     // Game assets
     SpaceShip ship;
     std::vector<Obstacle> obstacles;
+    
     std::vector<Alien> aliens;
+    int alien_dir;
+    void move_aliens();
+    void aliens_down(int distance);
+    void aliens_shoot();
+    std::vector<Laser> al_laser;
+    // Constant expression for alien shot intervals, decided at compile time
+    constexpr static float al_shot_intv = 0.35;
+    float last_al_laser_time;
 };

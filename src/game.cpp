@@ -1,12 +1,17 @@
 #include "game.hpp"
 #include <iostream>
 
+// Constructor
 Game::Game() {
     obstacles = make_obs();
     aliens = make_alien();
+    alien_dir = 1;
+    last_al_laser_time = 0.0;
 }
 
+// Deconstructor
 Game::~Game() {
+    Alien::unload_images();
 }
 
 void Game::update() {
@@ -14,6 +19,16 @@ void Game::update() {
     for(auto& laser: ship.lasers) {
         laser.update();
     }
+
+    // Alien movement and logic
+    move_aliens();
+    aliens_shoot();
+
+    // Update alien laser positions
+    for(auto& laser: al_laser) {
+        laser.update();
+    }
+
     // Clean up lasers that fly off screen
     delete_laser();
 }
@@ -35,10 +50,14 @@ void Game::draw() {
     for(auto& alien: aliens) {
         alien.draw();
     }
+
+    // Iterate over a vector of alien lasers and draw to screen
+    for(auto& laser: al_laser) {
+        laser.draw();
+    }
 }
 
 void Game::delete_laser() {
-
     // Iterator to loop through the vector and remove any inactive lasers
     for(auto it = ship.lasers.begin(); it != ship.lasers.end();) {
         if(!it -> active) {
@@ -97,5 +116,43 @@ void Game::handle_input() {
         ship.move_down();
     } else if (IsKeyDown(KEY_SPACE)) {
         ship.fire_laser();
+    }
+}
+
+void Game::move_aliens() {
+    // Calculate screen position to make sure the aliens stay on screen
+    // Move aliens down once the edge of screen is met
+    for(auto& alien: aliens) {
+        if(alien.position.x + alien.alien_images[alien.type - 1].width > GetScreenWidth()) {
+            alien_dir = -1;
+            aliens_down(4);
+        }
+        if(alien.position.x < 0) {
+            alien_dir = 1;
+            aliens_down(4);
+        }
+        // Update movement
+        alien.update(alien_dir);
+    }
+}
+
+void Game::aliens_down(int distance) {
+    for(auto& alien: aliens) {
+        alien.position.y += distance;
+    }
+}
+
+void Game::aliens_shoot() {
+    // Get time and if current time is greq to interval and aliens are on screen fire
+    double curr_time = GetTime();
+    if(curr_time - last_al_laser_time >= al_shot_intv && !aliens.empty()) {
+
+        // Pick a random alien and have it fire a laser
+        int rand_idx = GetRandomValue(0, aliens.size() - 1);
+        Alien& alien = aliens[rand_idx];
+        al_laser.push_back(Laser({alien.position.x + alien.alien_images[alien.type - 1].width / 2,
+        alien.position.y + alien.alien_images[alien.type - 1].height}, 6));
+        // Update last fire time given completion of previous code
+        last_al_laser_time = GetTime();
     }
 }
