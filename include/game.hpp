@@ -15,7 +15,7 @@ public:
 
 private:
     void delete_laser();
-    // Helper functions to create assets
+    // Helper functions to create game objects
     std::vector<Obstacle> make_obs();
     std::vector<Alien> create_fleet();
 

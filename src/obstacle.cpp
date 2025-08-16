@@ -1,5 +1,6 @@
 #include "obstacle.hpp"
 
+// Vector of vectors to create a grid map of our obstacles
 std::vector<std::vector<int>> Obstacle::grid = {
     {0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0},
     {0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0},
@@ -16,6 +17,7 @@ std::vector<std::vector<int>> Obstacle::grid = {
     {1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1}
 };
 
+// Constructor
 Obstacle::Obstacle(Vector2 position) {
     this -> position = position;
 
@@ -34,6 +36,7 @@ Obstacle::Obstacle(Vector2 position) {
     }
 }
 
+// Function to draw obstacles onto screen
 void Obstacle::draw() {
     // Iterate over each block in vector and draw to screen
     for(auto& block: blocks) {

@@ -1,14 +1,17 @@
 #include "aliens.hpp"
 
-// Store alien images into an array
+// Store alien images into an array, improves loading time
 Texture2D Alien::alien_images[3] = {};
 
+// Function to unload textures after game ends, prevents mem leaks
 void Alien::unload_images() {
+    // Iterates over 
     for(int i = 0; i < 4; i++) {
         UnloadTexture(alien_images[i]);
     }
 }
 
+// Constructor
 Alien::Alien(int type, Vector2 position) {
     this -> type = type;
     this -> position = position;
@@ -33,14 +36,17 @@ Alien::Alien(int type, Vector2 position) {
     }
 }
 
+// Function to draw aliens to screen given a position in the vector
 void Alien::draw() {
     DrawTexture(alien_images[type - 1], position.x, position.y, WHITE);
 }
 
+// Function to retrive alien type
 int Alien::get_type() {
     return type;
 }
 
+// Function to update direction variable
 void Alien::update(int direction) {
     position.x += direction;
 }

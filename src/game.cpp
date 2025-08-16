@@ -120,6 +120,7 @@ std::vector<Alien> Game::create_fleet() {
     return aliens;
 }
 
+// Function to handle IO logic for game events
 void Game::handle_input() {
     if(IsKeyDown(KEY_LEFT)) {
         ship.move_left();
@@ -134,14 +135,17 @@ void Game::handle_input() {
     }
 }
 
+// Function to shift fleet position on game window
 void Game::move_aliens() {
     // Calculate screen position to make sure the aliens stay on screen
     // Move aliens down once the edge of screen is met
     for(auto& alien: aliens) {
+        // Right side of screen
         if(alien.position.x + alien.alien_images[alien.type - 1].width > GetScreenWidth()) {
             alien_dir = -1;
             aliens_down(4);
         }
+        // Left side of screen
         if(alien.position.x < 0) {
             alien_dir = 1;
             aliens_down(4);
@@ -151,12 +155,15 @@ void Game::move_aliens() {
     }
 }
 
+// Function to move entire fleet of aliens down the y direction
 void Game::aliens_down(int distance) {
+    // Iterate over vector of aliens and update y_coord for each alien
     for(auto& alien: aliens) {
         alien.position.y += distance;
     }
 }
 
+// Function handle firing logic for alien fleet
 void Game::aliens_shoot() {
     // Get time and if current time is greq to interval and aliens are on screen fire
     double curr_time = GetTime();
@@ -165,8 +172,13 @@ void Game::aliens_shoot() {
         // Pick a random alien and have it fire a laser
         int rand_idx = GetRandomValue(0, aliens.size() - 1);
         Alien& alien = aliens[rand_idx];
-        al_laser.push_back(Laser({alien.position.x + alien.alien_images[alien.type - 1].width / 2,
-        alien.position.y + alien.alien_images[alien.type - 1].height}, 6));
+
+        // Vector {x_coord, y_coord} calculations with a laser speed of 6 pixels
+        al_laser.push_back(Laser(
+            {alien.position.x + alien.alien_images[alien.type - 1].width / 2, 
+            alien.position.y + alien.alien_images[alien.type - 1].height}, 6)
+        );
+
         // Update last fire time given completion of previous code
         last_al_laser_time = GetTime();
     }
