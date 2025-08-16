@@ -46,6 +46,7 @@ void Game::update() {
     } else {
         if(IsKeyDown(KEY_ENTER)) {
             reset();
+            init();
         }
     }
 }
@@ -286,6 +287,7 @@ void Game::check_collisions() {
                 if(CheckCollisionRecs(it -> get_rect(), ship.get_rect())) {
                     it = obs.blocks.erase(it);
                     lives --;
+                    ship.reset();
                     if(lives == 0) {
                         game_over();
                     }
@@ -311,6 +313,9 @@ void Game::init() {
 // Function to reset game after game over
 void Game::reset() {
     ship.reset();
+    aliens.clear();
+    al_lasers.clear();
+    obstacles.clear();
 }
 
 // Function to terminate game when lives reach zero
