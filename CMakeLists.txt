@@ -18,6 +18,7 @@ add_executable(${PROJECT_NAME}
     src/block.cpp
     src/aliens.cpp
     src/mystery_ship.cpp
+    src/button.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/)
