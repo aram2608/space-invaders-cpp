@@ -3,6 +3,7 @@
 // Constructor - SpaceShip
 SpaceShip::SpaceShip() {
     image = LoadTexture("assets/spaceship.png");
+    laser_sound = LoadSound("audio/laser.ogg");
     // Calculate starting point in middle of screen
     position.x = (GetScreenWidth() - image.width ) / 2;
     position.y = GetScreenHeight() - image.height - 100;
@@ -12,6 +13,7 @@ SpaceShip::SpaceShip() {
 // Deconstructor - SpaceShip
 SpaceShip::~SpaceShip() {
     UnloadTexture(image);
+    UnloadSound(laser_sound);
 }
 
 // Function to draw ship to game window
@@ -57,6 +59,7 @@ void SpaceShip::fire_laser() {
     if(GetTime() - fire_time >= 0.35) {
     lasers.push_back(Laser({position.x + image.width / 2 - 2, position.y},-6));
     fire_time = GetTime();
+    PlaySound(laser_sound);
     }
 }
 

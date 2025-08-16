@@ -4,12 +4,17 @@
 
 // Constructor - Game
 Game::Game() {
+    music = LoadMusicStream("audio/music.ogg");
+    explosion_sound = LoadSound("audio/explosion.ogg");
+    PlayMusicStream(music);
     init();
 }
 
 // Deconstructor - Game
 Game::~Game() {
     Alien::unload_images();
+    UnloadMusicStream(music);
+    UnloadSound(explosion_sound);
 }
 
 // Function to update the events on screen
@@ -213,6 +218,7 @@ void Game::check_collisions() {
         auto it = aliens.begin();
         while(it != aliens.end()) {
             if(CheckCollisionRecs(it -> get_rect(), laser.get_rect())) {
+                PlaySound(explosion_sound);
                 // Scoring for alien types
                 if(it -> type == 1) {
                     score += 100;
@@ -242,6 +248,7 @@ void Game::check_collisions() {
         }
         // Check laser/mystery ship collisions
         if(CheckCollisionRecs(laser.get_rect(), mystery_ship.get_rect())) {
+            PlaySound(explosion_sound);
             laser.active = false;
             mystery_ship.alive = false;
             score += 500;

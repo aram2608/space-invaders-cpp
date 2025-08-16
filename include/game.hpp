@@ -21,6 +21,7 @@ public:
     bool run;
     int score;
     int high_score;
+    Music music;
 private:
     // Function to delete lasers to protect memory resources
     void delete_laser();
@@ -59,4 +60,5 @@ private:
     float last_al_laser_time;
     float myst_ship_intv;
     float lst_myst_spwn;
+    Sound explosion_sound;
 };

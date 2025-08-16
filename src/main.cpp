@@ -50,21 +50,26 @@ int main() {
     int window_w = 750;
     int window_h = 700;
 
-    // Game window and FPS //
+    // Game window Audio Device //
     // INITIALIZE FIRST BEFORE LOADING GPU RESOURCES //
     InitWindow(window_w + off_set, window_h + (2 * off_set), "C++ - Space Invaders");
-    SetTargetFPS(60);
+    InitAudioDevice();
 
     // Font - 64 pixels in size
     Font font = LoadFontEx("font/monogram.ttf", 64, 0, 0);
     // UI component to display number of lives remaining
     Texture2D ship_image = LoadTexture("assets/spaceship.png");
 
+    // Target FPS of 60
+    SetTargetFPS(60);
+
     // Create our Game object
     Game game;
 
     // Game loop. Runs will the window is not closed
     while (!WindowShouldClose()) {
+        // Tunes
+        UpdateMusicStream(game.music);
 
         // Handles game inputs
         game.handle_input();
@@ -106,5 +111,6 @@ int main() {
 
     // Close our game window
     CloseWindow();
+    CloseAudioDevice();
     return 0;
 }
