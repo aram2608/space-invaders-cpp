@@ -3,15 +3,16 @@
 #include "lasers.hpp"
 
 class Game {
-    public:
-        // Constructor
-        Game();
-        // Deconstructor
-        ~Game();
+public:
+    // Constructor
+    Game();
+    // Deconstructor
+    ~Game();
     void draw();
     void update();
     void handle_input();
-    private:
-        void delete_laser();
-        SpaceShip ship;
+
+private:
+    void delete_laser();
+    SpaceShip ship;
 };
