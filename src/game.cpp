@@ -66,10 +66,21 @@ std::vector<Alien> Game::make_alien() {
     std::vector<Alien> aliens;
     for(int row = 0; row < 5; row++) {
         for(int column = 0; column < 11; column++) {
+
+            // Calculates alien type from row number
+            int alien_t;
+            if(row == 0) {
+                alien_t = 3;
+            } else if(row == 1 || row == 2) {
+                alien_t = 2;
+            } else {
+                alien_t = 1;
+            }
+            
             // Calculate x and y by an arbitrary cell_size of 55
             float x = 75 + column * 55;
             float y = 100 + row * 55;
-            aliens.push_back(Alien(1, {x, y}));
+            aliens.push_back(Alien(alien_t, {x, y}));
         }
     }
     return aliens;
