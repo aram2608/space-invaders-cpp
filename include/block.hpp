@@ -3,6 +3,7 @@
 
 class Block {
 public:
+    // Constructor
     Block(Vector2 position);
     void draw();
     Rectangle get_rect();

@@ -14,6 +14,8 @@ add_executable(${PROJECT_NAME}
     src/spaceship.cpp
     src/game.cpp
     src/lasers.cpp
+    src/obstacle.cpp
+    src/block.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/)
