@@ -247,6 +247,25 @@ void Game::check_collisions() {
             }
         }
     }
+    // Alien collisions
+    for(auto& alien: aliens) {
+        // Alien/obstacle collisions
+        for(auto& obs: obstacles) {
+            auto it = obs.blocks.begin();
+            while(it != obs.blocks.end()) {
+                if(CheckCollisionRecs(it -> get_rect(), alien.get_rect())) {
+                    it = obs.blocks.erase(it);
+                } else {
+                    it++;
+                }
+            }
+        }
+        // Alien/ship collision
+        if(CheckCollisionRecs(alien.get_rect(), ship.get_rect())) {
+            lives -= 1;
+            std::cout << "Spaceship collided with alien! " << lives << std::endl;
+        }
+    }
 }
 
 // Function to initialize game parameters
