@@ -1,7 +1,7 @@
 #include "lasers.hpp"
 #include <iostream>
 
-// Constructor
+// Constructor - Laser - Takes Vector and int
 Laser::Laser(Vector2 position, int speed) {
     this -> position = position;
     this -> speed = speed;

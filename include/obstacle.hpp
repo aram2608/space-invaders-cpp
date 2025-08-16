@@ -4,11 +4,13 @@
 
 class Obstacle {
 public:
+    // Constructor - Obstacle - Takes a Vector2
     Obstacle(Vector2 position);
+    // Function to draw obstacles onto screen
     void draw();
+
     Vector2 position;
     std::vector<Block> blocks;
-    // static allows us to use this attribute without creating an instance of Obstacle
     static std::vector<std::vector<int>> grid;
 private:
 };

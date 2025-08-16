@@ -17,7 +17,7 @@ std::vector<std::vector<int>> Obstacle::grid = {
     {1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1}
 };
 
-// Constructor
+// Constructor - Obstacle - Takes a Vector2
 Obstacle::Obstacle(Vector2 position) {
     this -> position = position;
 

@@ -1,6 +1,6 @@
 #include "spaceship.hpp"
 
-// Constructor
+// Constructor - SpaceShip
 SpaceShip::SpaceShip() {
     image = LoadTexture("assets/spaceship.png");
     // Calculate starting point in middle of screen
@@ -9,7 +9,7 @@ SpaceShip::SpaceShip() {
     fire_time = 0;
 }
 
-// Deconstructor
+// Deconstructor - SpaceShip
 SpaceShip::~SpaceShip() {
     UnloadTexture(image);
 }

@@ -5,23 +5,27 @@
 
 class SpaceShip {
 public:
-    // Constructor
+    // Constructor - SpaceShip
     SpaceShip();
+    // Function to draw ship to game window
     void draw();
+    // Function to change x_coord left
     void move_left();
+    // Function to change x_coord right
     void move_right();
+    // Function to change y_coord up
     void move_up();
+    // Function to change y_coord down
     void move_down();
+    // Function to handle firing of ship laser
     void fire_laser();
-    std::vector<Laser> lasers;
-    // Deconstructor
-    ~SpaceShip();
 
+    std::vector<Laser> lasers;
+
+    // Deconstructor - SpaceShip
+    ~SpaceShip();
 private:
-    // Data type to represent 2D images
     Texture2D image;
-    // Data type that has both x and y pos
     Vector2 position;
-    // Keeps track of fire rate
     double fire_time;
 };

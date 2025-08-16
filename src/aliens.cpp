@@ -11,7 +11,7 @@ void Alien::unload_images() {
     }
 }
 
-// Constructor
+// Constructor - Alien - Takes int and Vector2
 Alien::Alien(int type, Vector2 position) {
     this -> type = type;
     this -> position = position;

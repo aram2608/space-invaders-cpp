@@ -1,7 +1,7 @@
 #include "game.hpp"
 #include <iostream>
 
-// Constructor
+// Constructor - Game
 Game::Game() {
     obstacles = make_obs();
     aliens = create_fleet();
@@ -9,7 +9,7 @@ Game::Game() {
     last_al_laser_time = 0.0;
 }
 
-// Deconstructor
+// Deconstructor - Game
 Game::~Game() {
     Alien::unload_images();
 }

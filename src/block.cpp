@@ -1,6 +1,6 @@
 #include "block.hpp"
 
-// Constructor
+// Constructor - Block - Takes Vector2
 Block::Block(Vector2 position) {
     this -> position = position;
 }
