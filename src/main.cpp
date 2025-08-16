@@ -1,4 +1,5 @@
 #include <raylib.h>
+#include <string>
 #include "game.hpp"
 
 /* NOTES
@@ -32,6 +33,13 @@ All you need is a font file and the LoadFontEx
 ~~~~~~~~~~ General C++ Programming ~~~~~~~~~~
 
 */
+
+// Function to reformat a string with leading zeros
+std::string format_trail_zeros(int number, int width) {
+    std::string num_text = std::to_string(number);
+    int trailing_zeros = width - num_text.length();
+    return num_text = std::string(trailing_zeros, '0') + num_text;
+}
 
 int main() {
 
@@ -74,11 +82,22 @@ int main() {
             } else {
                 DrawTextEx(font, "GAME OVER", {565, 740}, 34, 2, yellow);
             }
+
+            // Lives remaining
             float x = 50.0;
             for(int i = 0; i < game.lives; i++) {
                 DrawTextureV(ship_image, {x, 745}, WHITE);
                 x += 50;
             }
+
+            // Scoreboard
+            DrawTextEx(font, "SCORE", {50, 15}, 34, 2, yellow);
+            std::string score_txt = format_trail_zeros(game.score, 5);
+            DrawTextEx(font, score_txt.c_str(), {50, 40}, 34, 2, yellow);
+
+            DrawTextEx(font, "HIGH SCORE", {570, 15}, 34, 2, yellow);
+            std::string high_scr_txt = format_trail_zeros(game.high_score, 5);
+            DrawTextEx(font, high_scr_txt.c_str(), {655, 40}, 34, 2, yellow);
 
             // Draw all defined game assets
             game.draw();

@@ -1,5 +1,6 @@
 #include "game.hpp"
 #include <iostream>
+#include <fstream>
 
 // Constructor - Game
 Game::Game() {
@@ -212,6 +213,15 @@ void Game::check_collisions() {
         auto it = aliens.begin();
         while(it != aliens.end()) {
             if(CheckCollisionRecs(it -> get_rect(), laser.get_rect())) {
+                // Scoring for alien types
+                if(it -> type == 1) {
+                    score += 100;
+                } else if(it -> type == 2) {
+                    score += 200;
+                } else if(it -> type == 3) {
+                    score += 300;
+                }
+                score_check();
                 it = aliens.erase(it);
                 laser.active = false;
             } else {
@@ -234,6 +244,8 @@ void Game::check_collisions() {
         if(CheckCollisionRecs(laser.get_rect(), mystery_ship.get_rect())) {
             laser.active = false;
             mystery_ship.alive = false;
+            score += 500;
+            score_check();
         }
     }
     // Alien lasers
@@ -309,6 +321,8 @@ void Game::init() {
     myst_ship_intv = GetRandomValue(10, 20);
     lives = 3;
     run = true;
+    score = 0;
+    high_score = load_score_file();
 }
 
 // Function to reset game after game over
@@ -322,4 +336,35 @@ void Game::reset() {
 // Function to terminate game when lives reach zero
 void Game::game_over() {
     run = false;
+}
+
+// Function to update high score
+void Game::score_check() {
+    if(score > high_score) {
+        high_score = score;
+        save_high_scr(high_score);
+    }
+}
+
+// Function to save high score to a text file
+void Game::save_high_scr(int high_scr) {
+    std::ofstream high_scr_file("score/highscore.txt");
+    if(high_scr_file.is_open()) {
+    high_scr_file << high_score;
+    high_scr_file.close();
+    } else {
+        std::cerr << "Failed to save highscore to file" << std::endl;
+    }
+}
+
+// Function to load a high score at start of game from text file
+int Game::load_score_file() {
+    int loaded_high_scr = 0;
+    std::ifstream high_scr_file("score/highscore.txt");
+    if(high_scr_file.is_open()) {
+        high_scr_file >> loaded_high_scr;
+    } else {
+        std::cerr << "Failed to load highscore from file" << std::endl;
+    }
+    return loaded_high_scr;
 }

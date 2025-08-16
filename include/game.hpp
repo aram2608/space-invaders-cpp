@@ -19,6 +19,8 @@ public:
 
     int lives;
     bool run;
+    int score;
+    int high_score;
 private:
     // Function to delete lasers to protect memory resources
     void delete_laser();
@@ -40,6 +42,12 @@ private:
     void reset();
     // Function to terminate game when lives reach zero
     void game_over();
+    // Function to update high score
+    void score_check();
+    // Function to save high score to a text file
+    void save_high_scr(int high_scr);
+    // Function to load a high score at start of game from text file
+    int load_score_file();
 
     SpaceShip ship;
     std::vector<Obstacle> obstacles;

@@ -7,7 +7,7 @@
 - [x] Aliens
 - [x] Mystery ship
 - [x] Check for collisions
-- [] Game over
-- [] Scoring
+- [x] Game over
+- [x] Scoring
 - [] Add high scores
 - [] Add sounds
