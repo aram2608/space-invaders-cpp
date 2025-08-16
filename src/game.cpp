@@ -13,34 +13,37 @@ Game::~Game() {
 
 // Function to update the events on screen
 void Game::update() {
-    // Logic to handling spawn time of mystery ship
-    double curr_t = GetTime();
-    if(curr_t - lst_myst_spwn > myst_ship_intv) {
-        mystery_ship.spawn();
-        lst_myst_spwn = GetTime();
-        myst_ship_intv = GetRandomValue(10, 20);
+    // Only active while game state is on
+    if(run) {
+        // Logic to handling spawn time of mystery ship
+        double curr_t = GetTime();
+        if(curr_t - lst_myst_spwn > myst_ship_intv) {
+            mystery_ship.spawn();
+            lst_myst_spwn = GetTime();
+            myst_ship_intv = GetRandomValue(10, 20);
+        }
+
+        // Iterate over vector of lasers and update positions
+        for(auto& laser: ship.lasers) {
+            laser.update();
+        }
+
+        // Alien movement and logic
+        move_aliens();
+        aliens_shoot();
+
+        // Update alien laser positions
+        for(auto& laser: al_lasers) {
+            laser.update();
+        }
+
+        // Clean up lasers that fly off screen
+        delete_laser();
+        mystery_ship.update();
+
+        // Collision handling logic
+        check_collisions();
     }
-
-    // Iterate over vector of lasers and update positions
-    for(auto& laser: ship.lasers) {
-        laser.update();
-    }
-
-    // Alien movement and logic
-    move_aliens();
-    aliens_shoot();
-
-    // Update alien laser positions
-    for(auto& laser: al_lasers) {
-        laser.update();
-    }
-
-    // Clean up lasers that fly off screen
-    delete_laser();
-    mystery_ship.update();
-
-    // Collision handling logic
-    check_collisions();
 }
 
 // Function to draw events onto game window
@@ -132,16 +135,18 @@ std::vector<Alien> Game::create_fleet() {
 
 // Function to handle IO logic for game events
 void Game::handle_input() {
-    if(IsKeyDown(KEY_LEFT)) {
-        ship.move_left();
-    } else if (IsKeyDown(KEY_RIGHT)) {
-        ship.move_right();
-    } else if (IsKeyDown(KEY_UP)) {
-        ship.move_up();
-    } else if (IsKeyDown(KEY_DOWN)) {
-        ship.move_down();
-    } else if (IsKeyDown(KEY_SPACE)) {
-        ship.fire_laser();
+    if(run) {
+        if(IsKeyDown(KEY_LEFT)) {
+            ship.move_left();
+        } else if (IsKeyDown(KEY_RIGHT)) {
+            ship.move_right();
+        } else if (IsKeyDown(KEY_UP)) {
+            ship.move_up();
+        } else if (IsKeyDown(KEY_DOWN)) {
+            ship.move_down();
+        } else if (IsKeyDown(KEY_SPACE)) {
+            ship.fire_laser();
+        }
     }
 }
 
@@ -231,8 +236,10 @@ void Game::check_collisions() {
         // Check for ship/laser collisions
         if(CheckCollisionRecs(laser.get_rect(), ship.get_rect())) {
             laser.active = false;
-            lives -= 1;
-            std::cout << "Ship Hit!" << lives << std::endl;
+            lives --;
+            if(lives == 0) {
+                game_over();
+            }
         }
         // Iterate over obstacles vector to check for collisions
         for(auto& obs: obstacles) {
@@ -262,9 +269,26 @@ void Game::check_collisions() {
         }
         // Alien/ship collision
         if(CheckCollisionRecs(alien.get_rect(), ship.get_rect())) {
-            lives -= 1;
-            std::cout << "Spaceship collided with alien! " << lives << std::endl;
+            lives --;
+            if(lives == 0) {
+                game_over();
+            }
         }
+    }
+    // Obstacle/ship collision
+    for(auto& obs: obstacles) {
+        auto it = obs.blocks.begin();
+            while(it != obs.blocks.end()) {
+                if(CheckCollisionRecs(it -> get_rect(), ship.get_rect())) {
+                    it = obs.blocks.erase(it);
+                    lives --;
+                    if(lives == 0) {
+                        game_over();
+                    }
+                } else {
+                    it++;
+                }
+            }
     }
 }
 
@@ -277,4 +301,10 @@ void Game::init() {
     lst_myst_spwn = 0.0;
     myst_ship_intv = GetRandomValue(10, 20);
     lives = 3;
+    run = true;
+}
+
+// Function to terminate game when lives reach zero
+void Game::game_over() {
+    run = false;
 }

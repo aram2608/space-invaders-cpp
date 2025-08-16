@@ -6,7 +6,7 @@
 - [x] Obstacles
 - [x] Aliens
 - [x] Mystery ship
-- [] Check for collisions
+- [x] Check for collisions
 - [] Game over
 - [] Scoring
 - [] Add high scores

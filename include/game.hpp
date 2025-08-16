@@ -18,7 +18,7 @@ public:
     void handle_input();
 
     int lives;
-
+    bool run;
 private:
     // Function to delete lasers to protect memory resources
     void delete_laser();
@@ -36,6 +36,8 @@ private:
     void check_collisions();
     // Function to initialize game parameters
     void init();
+    // Function to terminate game when lives reach zero
+    void game_over();
 
     SpaceShip ship;
     std::vector<Obstacle> obstacles;
