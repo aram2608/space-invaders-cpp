@@ -8,6 +8,7 @@ Game::Game() {
     explosion_sound = LoadSound("audio/explosion.ogg");
     PlayMusicStream(music);
     init();
+    new_game = 0;
 }
 
 // Deconstructor - Game
@@ -349,6 +350,7 @@ void Game::reset() {
 // Function to terminate game when lives reach zero
 void Game::game_over() {
     run = false;
+    new_game ++;
 }
 
 // Function to update high score

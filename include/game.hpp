@@ -22,6 +22,7 @@ public:
     int score;
     int high_score;
     int level;
+    int new_game;
     Music music;
 private:
     // Function to delete lasers to protect memory resources

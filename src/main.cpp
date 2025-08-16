@@ -99,7 +99,11 @@ int main() {
                     std::string level = level_display + " " + level_num;
                     DrawTextEx(font, level.c_str(), {565, 740}, 34, 2, yellow);
                 } else {
-                    DrawTextEx(font, "GAME OVER", {565, 740}, 34, 2, yellow);
+                    if(game.new_game == 0) {
+                        DrawTextEx(font, "PRESS ENTER TO START GAME", {290, 740}, 34, 2, yellow);
+                    } else {
+                        DrawTextEx(font, "GAME OVER", {565, 740}, 34, 2, yellow);
+                    }
                 }
 
             // Lives remaining
