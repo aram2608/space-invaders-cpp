@@ -3,7 +3,7 @@
 // Constructor - SpaceShip
 SpaceShip::SpaceShip() {
     image = LoadTexture("assets/spaceship.png");
-    laser_sound = LoadSound("audio/laser.ogg");
+    laser_sound = LoadSound("audio/player_laser.ogg");
     // Calculate starting point in middle of screen
     position.x = (GetScreenWidth() - image.width ) / 2;
     position.y = GetScreenHeight() - image.height - 100;

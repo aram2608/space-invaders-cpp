@@ -65,4 +65,5 @@ private:
     float myst_ship_intv;
     float lst_myst_spwn;
     Sound explosion_sound;
+    Sound game_over_sound;
 };

@@ -4,8 +4,9 @@
 
 // Constructor - Game
 Game::Game() {
-    music = LoadMusicStream("audio/music.ogg");
+    music = LoadMusicStream("audio/bgm.ogg");
     explosion_sound = LoadSound("audio/explosion.ogg");
+    game_over_sound = LoadSound("audio/game_over.ogg");
     PlayMusicStream(music);
     init();
     new_game = 0;
@@ -16,6 +17,7 @@ Game::~Game() {
     Alien::unload_images();
     UnloadMusicStream(music);
     UnloadSound(explosion_sound);
+    UnloadSound(game_over_sound);
 }
 
 // Function to update the events on screen
@@ -349,6 +351,7 @@ void Game::reset() {
 
 // Function to terminate game when lives reach zero
 void Game::game_over() {
+    PlaySound(game_over_sound);
     run = false;
     new_game ++;
 }
