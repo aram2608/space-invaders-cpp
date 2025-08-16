@@ -21,6 +21,10 @@ raylib is really easy to use load textures when it is better than
 
 Just make sure to always unload the texture to not leak memory
 
+GPU Resources -----
+ALWAYS make sure to create the window before loading GPU resources like
+- textures etc..
+
 Fonts -----
 Fonts are just as easy to load as textures
 All you need is a font file and the LoadFontEx
@@ -38,13 +42,15 @@ int main() {
     int window_w = 750;
     int window_h = 700;
 
+    // Game window and FPS //
+    // INITIALIZE FIRST BEFORE LOADING GPU RESOURCES //
+    InitWindow(window_w + off_set, window_h + (2 * off_set), "C++ - Space Invaders");
+    SetTargetFPS(60);
+
     // Font - 64 pixels in size
     Font font = LoadFontEx("font/monogram.ttf", 64, 0, 0);
-
-    // Game window
-    InitWindow(window_w + off_set, window_h + (2 * off_set), "C++ - Space Invaders");
-    // Game FPS
-    SetTargetFPS(60);
+    // UI component to display number of lives remaining
+    Texture2D ship_image = LoadTexture("assets/spaceship.png");
 
     // Create our Game object
     Game game;
@@ -67,6 +73,11 @@ int main() {
                 DrawTextEx(font, "LEVEL 01", {565, 740}, 34, 2, yellow);
             } else {
                 DrawTextEx(font, "GAME OVER", {565, 740}, 34, 2, yellow);
+            }
+            float x = 50.0;
+            for(int i = 0; i < game.lives; i++) {
+                DrawTextureV(ship_image, {x, 745}, WHITE);
+                x += 50;
             }
 
             // Draw all defined game assets
