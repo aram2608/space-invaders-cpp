@@ -17,6 +17,8 @@ public:
     // Function to handle IO logic for game events
     void handle_input();
 
+    int lives;
+
 private:
     // Function to delete lasers to protect memory resources
     void delete_laser();
@@ -32,6 +34,8 @@ private:
     void aliens_shoot();
     // Function to handle collisions
     void check_collisions();
+    // Function to initialize game parameters
+    void init();
 
     SpaceShip ship;
     std::vector<Obstacle> obstacles;

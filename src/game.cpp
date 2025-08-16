@@ -3,12 +3,7 @@
 
 // Constructor - Game
 Game::Game() {
-    obstacles = make_obs();
-    aliens = create_fleet();
-    alien_dir = 1;
-    last_al_laser_time = 0.0;
-    lst_myst_spwn = 0.0;
-    myst_ship_intv = GetRandomValue(10, 20);
+    init();
 }
 
 // Deconstructor - Game
@@ -233,6 +228,12 @@ void Game::check_collisions() {
     }
     // Alien lasers
     for(auto& laser: al_lasers) {
+        // Check for ship/laser collisions
+        if(CheckCollisionRecs(laser.get_rect(), ship.get_rect())) {
+            laser.active = false;
+            lives -= 1;
+            std::cout << "Ship Hit!" << lives << std::endl;
+        }
         // Iterate over obstacles vector to check for collisions
         for(auto& obs: obstacles) {
             auto it = obs.blocks.begin();
@@ -246,4 +247,15 @@ void Game::check_collisions() {
             }
         }
     }
+}
+
+// Function to initialize game parameters
+void Game::init() {
+    obstacles = make_obs();
+    aliens = create_fleet();
+    alien_dir = 1;
+    last_al_laser_time = 0.0;
+    lst_myst_spwn = 0.0;
+    myst_ship_intv = GetRandomValue(10, 20);
+    lives = 3;
 }
