@@ -30,11 +30,12 @@ Color GREY = {29, 29, 27, 255};
 
 int main() {
     // Hard codes the size for our game
+    int off_set = 50;
     int window_w = 750;
     int window_h = 700;
 
     // Game window
-    InitWindow(window_w, window_h, "C++ - Space Invaders");
+    InitWindow(window_w + off_set, window_h + (2 * off_set), "C++ - Space Invaders");
     // Game FPS
     SetTargetFPS(60);
 
