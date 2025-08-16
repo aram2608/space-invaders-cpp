@@ -9,6 +9,8 @@ public:
     void update();
     // Function to draw lasers to screen, handled with raylib
     void draw();
+    // Function to get rectangle for lasers
+    Rectangle get_rect();
 
     bool active;
 private:

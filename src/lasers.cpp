@@ -14,6 +14,16 @@ void Laser::draw() {
     if(active) DrawRectangle(position.x, position.y, 4, 15, Color{0, 128, 0, 255});
 }
 
+// Function to get rectangle for lasers
+Rectangle Laser::get_rect() {
+    Rectangle rect;
+    rect.x = position.x,
+    rect.y = position.y,
+    rect.width = 4;
+    rect.height = 15;
+    return rect;
+}
+
 // Function to update laser position
 void Laser::update() {
     position.y += speed;

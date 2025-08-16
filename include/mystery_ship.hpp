@@ -13,6 +13,8 @@ class MysteryShip {
         void draw();
         // Function to handle firing of ship laser
         void spawn();
+        // Function to get rectangle for mystery ship
+        Rectangle get_rect();
 
         bool alive;
     private:

@@ -30,6 +30,8 @@ private:
     void aliens_down(int distance);
     // Function handle firing logic for alien fleet
     void aliens_shoot();
+    // Function to handle collisions
+    void check_collisions();
 
     SpaceShip ship;
     std::vector<Obstacle> obstacles;

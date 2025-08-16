@@ -43,6 +43,9 @@ void Game::update() {
     // Clean up lasers that fly off screen
     delete_laser();
     mystery_ship.update();
+
+    // Collision handling logic
+    check_collisions();
 }
 
 // Function to draw events onto game window
@@ -193,5 +196,49 @@ void Game::aliens_shoot() {
 
         // Update last fire time given completion of previous code
         last_al_laser_time = GetTime();
+    }
+}
+
+// Function to handle collisions
+void Game::check_collisions() {
+    // Spaceship Lasers
+    for(auto& laser: ship.lasers) {
+        // Iterate over aliens in alien vector and check for collisions
+        auto it = aliens.begin();
+        while(it != aliens.end()) {
+            if(CheckCollisionRecs(it -> get_rect(), laser.get_rect())) {
+                it = aliens.erase(it);
+                laser.active = false;
+            } else {
+                ++it;
+            }
+        }
+        // Iterate over obstacles vector to check for collisions
+        for(auto& obs: obstacles) {
+            auto it = obs.blocks.begin();
+            while(it != obs.blocks.end()) {
+                if(CheckCollisionRecs(it -> get_rect(), laser.get_rect())) {
+                    it = obs.blocks.erase(it);
+                    laser.active = false;
+                } else {
+                    ++it;
+                }
+            }
+        }
+    }
+    // Alien lasers
+    for(auto& laser: al_laser) {
+        // Iterate over obstacles vector to check for collisions
+        for(auto& obs: obstacles) {
+            auto it = obs.blocks.begin();
+            while(it != obs.blocks.end()) {
+                if(CheckCollisionRecs(it -> get_rect(), laser.get_rect())) {
+                    it = obs.blocks.erase(it);
+                    laser.active = false;
+                } else {
+                    ++it;
+                }
+            }
+        }
     }
 }

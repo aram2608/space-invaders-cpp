@@ -59,3 +59,13 @@ void SpaceShip::fire_laser() {
     fire_time = GetTime();
     }
 }
+
+// Function to get rectangle for ship
+Rectangle SpaceShip::get_rect() {
+    return {
+        position.x,
+        position.y,
+        float(image.width),
+        float(image.height)
+    };
+}

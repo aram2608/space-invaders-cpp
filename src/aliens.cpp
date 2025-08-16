@@ -11,6 +11,16 @@ void Alien::unload_images() {
     }
 }
 
+// Function to get rectangle for aliens
+Rectangle Alien::get_rect() {
+    return {
+        position.x,
+        position.y,
+        float(alien_images[type - 1].width),
+        float(alien_images[type - 1].height)
+    };
+}
+
 // Constructor - Alien - Takes int and Vector2
 Alien::Alien(int type, Vector2 position) {
     this -> type = type;

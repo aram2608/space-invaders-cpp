@@ -19,6 +19,8 @@ public:
     void move_down();
     // Function to handle firing of ship laser
     void fire_laser();
+    // Function to get rectangle for ship
+    Rectangle get_rect();
 
     std::vector<Laser> lasers;
 

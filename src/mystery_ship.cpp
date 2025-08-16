@@ -25,6 +25,25 @@ void MysteryShip::spawn() {
     }
     alive = true;
 }
+// Function to get rectangle for mystery ship
+Rectangle MysteryShip::get_rect() {
+    // Only return rectangle if mystery ship is alive/on screen
+    if(alive) {
+        return {
+            position.x,
+            position.y,
+            float(image.width),
+            float(image.height)
+        };
+    } else {
+        return {
+            position.x,
+            position.y,
+            0,
+            0
+        };
+    }
+}
 
 // Function to update mystery ship position
 void MysteryShip::update() {
