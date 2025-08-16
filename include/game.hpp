@@ -1,5 +1,6 @@
 #pragma once
 #include "spaceship.hpp"
+#include "lasers.hpp"
 
 class Game {
     public:

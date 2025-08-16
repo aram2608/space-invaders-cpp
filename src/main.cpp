@@ -1,5 +1,6 @@
 #include <raylib.h>
 #include "game.hpp"
+#include "lasers.hpp"
 
 // In raylib, Color{red, green, blue, alpha}
 
@@ -18,17 +19,20 @@ int main() {
 
     // Create our Game object
     Game game;
+    Laser laser = Laser({100, 100}, 7);
 
     // Game loop. Runs will the window is not closed
     while (!WindowShouldClose()) {
 
         // Handles game inputs
         game.handle_input();
+        laser.update();
 
         BeginDrawing();
             // Draw a clear grey background
             ClearBackground(GREY);
             game.draw();
+            laser.draw();
 
         EndDrawing();
     }
