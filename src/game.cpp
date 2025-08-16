@@ -275,6 +275,7 @@ void Game::check_collisions() {
         // Alien/ship collision
         if(CheckCollisionRecs(alien.get_rect(), ship.get_rect())) {
             lives --;
+            ship.reset();
             if(lives == 0) {
                 game_over();
             }
