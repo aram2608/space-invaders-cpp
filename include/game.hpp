@@ -12,5 +12,6 @@ class Game {
     void update();
     void handle_input();
     private:
+        void delete_laser();
         SpaceShip ship;
 };
