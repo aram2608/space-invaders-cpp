@@ -107,7 +107,7 @@ std::vector<Obstacle> Game::make_obs() {
     // Iterate over the number of obstacles we want to make (4)
     for(int i = 0; i < 4; i++) {
         float off_x = (i + 1) * obs_gap + i * obs_w;
-        obstacles.push_back(Obstacle({off_x, float(GetScreenHeight() - 100)}));
+        obstacles.push_back(Obstacle({off_x, float(GetScreenHeight() - 200)}));
     }
     return obstacles;
 }
