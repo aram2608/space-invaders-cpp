@@ -69,3 +69,10 @@ Rectangle SpaceShip::get_rect() {
         float(image.height)
     };
 }
+
+// Function to reset spaceship
+void SpaceShip::reset() {
+    position.x = (GetScreenWidth() - image.width ) / 2;
+    position.y = GetScreenHeight() - image.height;
+    lasers.clear();
+}

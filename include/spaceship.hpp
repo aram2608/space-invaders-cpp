@@ -21,6 +21,8 @@ public:
     void fire_laser();
     // Function to get rectangle for ship
     Rectangle get_rect();
+    // Function to reset spaceship
+    void reset();
 
     std::vector<Laser> lasers;
 

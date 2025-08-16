@@ -43,6 +43,10 @@ void Game::update() {
 
         // Collision handling logic
         check_collisions();
+    } else {
+        if(IsKeyDown(KEY_ENTER)) {
+            reset();
+        }
     }
 }
 
@@ -302,6 +306,11 @@ void Game::init() {
     myst_ship_intv = GetRandomValue(10, 20);
     lives = 3;
     run = true;
+}
+
+// Function to reset game after game over
+void Game::reset() {
+    ship.reset();
 }
 
 // Function to terminate game when lives reach zero

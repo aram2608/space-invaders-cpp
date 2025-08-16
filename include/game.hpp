@@ -36,6 +36,8 @@ private:
     void check_collisions();
     // Function to initialize game parameters
     void init();
+    // Function to reset game after game over
+    void reset();
     // Function to terminate game when lives reach zero
     void game_over();
 
