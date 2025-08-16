@@ -21,18 +21,25 @@ raylib is really easy to use load textures when it is better than
 
 Just make sure to always unload the texture to not leak memory
 
+Fonts -----
+Fonts are just as easy to load as textures
+All you need is a font file and the LoadFontEx
+
 ~~~~~~~~~~ General C++ Programming ~~~~~~~~~~
 
 */
 
 int main() {
 
-    // Constants
+    // Constants //
     Color grey = {29, 29, 27, 255};
     Color yellow = {243, 216, 63, 255};
     int off_set = 50;
     int window_w = 750;
     int window_h = 700;
+
+    // Font - 64 pixels in size
+    Font font = LoadFontEx("font/monogram.ttf", 64, 0, 0);
 
     // Game window
     InitWindow(window_w + off_set, window_h + (2 * off_set), "C++ - Space Invaders");
@@ -51,9 +58,16 @@ int main() {
 
         // Main logic for drawing to game window
         BeginDrawing();
-            // Draw UI
+
+            // Draw UI Components
             ClearBackground(grey);
             DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, yellow);
+            DrawLineEx({25, 730}, {775, 730}, 3, yellow);
+            if(game.run) {
+                DrawTextEx(font, "LEVEL 01", {565, 740}, 34, 2, yellow);
+            } else {
+                DrawTextEx(font, "GAME OVER", {565, 740}, 34, 2, yellow);
+            }
 
             // Draw all defined game assets
             game.draw();
