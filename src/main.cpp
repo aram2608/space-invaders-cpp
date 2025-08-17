@@ -1,5 +1,6 @@
 #include <raylib.h>
 #include <string>
+#include <iostream>
 #include "game.hpp"
 
 /* NOTES
@@ -67,8 +68,17 @@ int main() {
     InitWindow(window_w + off_set, window_h + (2 * off_set), "C++ - Space Invaders");
     InitAudioDevice();
 
+    // Constant to keep track of screen height and width for text calculations/placements
+    Vector2 center = { GetScreenHeight() / 2.0f, GetScreenWidth() / 2.0f };
+
     // Font - 64 pixels in size
     Font font = LoadFontEx("font/monogram.ttf", 64, 0, 0);
+
+    // Calculations for Title Screen
+    Vector2 high_scr_title_size = MeasureTextEx(font, "HIGH SCORE", 34, 2);
+    Vector2 title_size = MeasureTextEx(font, "SPACE INVADERS", 80, 2);
+    Vector2 text_size = MeasureTextEx(font, "RETURN TO START GAME", 34, 2);
+
     // UI component to display number of lives remaining
     Texture2D ship_image = LoadTexture("assets/spaceship.png");
 
@@ -123,11 +133,16 @@ int main() {
                 // Draw UI Components
                 ClearBackground(grey);
                 DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, yellow);
-                DrawTextEx(font, "RETURN TO START GAME", {400, 400}, 34, 2, yellow);
-            }
 
-            // Draw all defined game assets
-            //game.draw();
+                // Title screen text
+                DrawTextEx(font, "SPACE INVADERS", {center.x - title_size.x / 2, (center.y - title_size.y / 2) - 50}, 80, 2, yellow);
+                DrawTextEx(font, "RETURN TO START GAME", {center.x - text_size.x / 2, (center.y - text_size.y / 2) + 20}, 34, 2, yellow);
+                DrawTextEx(font, "HIGH SCORE", {center.x - high_scr_title_size.x / 2, (center.y - high_scr_title_size.y / 2) + 200}, 34, 2, yellow);
+                // Formatting for high score loaded from file
+                std::string high_scr_txt = format_trail_zeros(game.high_score, 5);
+                Vector2 scr_txt_size = MeasureTextEx(font, high_scr_txt.c_str(), 34, 2);
+                DrawTextEx(font, high_scr_txt.c_str(), {center.x - scr_txt_size.x / 2, (center.y - scr_txt_size.y / 2) + 230}, 34, 2, yellow);
+            }
         EndDrawing();
     }
     // Close our game window
