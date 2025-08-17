@@ -11,6 +11,18 @@ Game::Game() {
     init();
     new_game = 0;
     state = GameState::Title;
+    // Textures
+    ship_image = LoadTexture("assets/spaceship.png");
+    font = LoadFontEx("font/monogram.ttf", 64, 0, 0);;
+
+    // Hard coded UI components
+    high_scr_title_size = MeasureTextEx(font, "HIGH SCORE", 34, 2);
+    title_size = MeasureTextEx(font, "SPACE INVADERS", 80, 2);
+    text_size = MeasureTextEx(font, "RETURN TO START GAME", 34, 2);
+    screen_center = { GetScreenHeight() / 2.0f, GetScreenWidth() / 2.0f };
+    grey = {29, 29, 27, 255};
+    level_display = "LEVEL";
+    yellow = {243, 216, 63, 255};
 }
 
 // Deconstructor - Game
@@ -83,6 +95,89 @@ void Game::draw() {
     for(auto& laser: al_lasers) {
         laser.draw();
     }
+}
+
+// Function to draw the title screen
+void Game::draw_title() {
+    // Draw UI Components
+    ClearBackground(grey);
+    DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, yellow);
+
+    // Title screen text
+    DrawTextEx(font, "SPACE INVADERS", {screen_center.x - title_size.x / 2, (screen_center.y - title_size.y / 2) - 50}, 80, 2, yellow);
+    DrawTextEx(font, "RETURN TO START GAME", {screen_center.x - text_size.x / 2, (screen_center.y - text_size.y / 2) + 20}, 34, 2, yellow);
+    DrawTextEx(font, "HIGH SCORE", {screen_center.x - high_scr_title_size.x / 2, (screen_center.y - high_scr_title_size.y / 2) + 200}, 34, 2, yellow);
+    // Formatting for high score loaded from file
+    std::string high_scr_txt = format_trail_zeros(high_score, 5);
+    Vector2 scr_txt_size = MeasureTextEx(font, high_scr_txt.c_str(), 34, 2);
+    DrawTextEx(font, high_scr_txt.c_str(), {screen_center.x - scr_txt_size.x / 2, (screen_center.y - scr_txt_size.y / 2) + 230}, 34, 2, yellow);
+}
+
+// // Function to draw the paused screen
+// void Game::draw_paused() {
+//     // Draw UI Components
+//     ClearBackground(ui.grey);
+//     DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, ui.yellow);
+//     DrawLineEx({25, 730}, {775, 730}, 3, ui.yellow);
+//     std::string level_num = ui.format_level(level);
+//     std::string level = ui.level_display + " " + level_num;
+//     DrawTextEx(ui.font, level.c_str(), {565, 740}, 34, 2, ui.yellow);
+
+//     // Scoreboard
+//     DrawTextEx(ui.font, "SCORE", {50, 15}, 34, 2, ui.yellow);
+//     std::string score_txt = ui.format_trail_zeros(score, 5);
+//     DrawTextEx(ui.font, score_txt.c_str(), {50, 40}, 34, 2, ui.yellow);
+
+//     DrawTextEx(ui.font, "HIGH SCORE", {570, 15}, 34, 2, ui.yellow);
+//     std::string high_scr_txt = ui.format_trail_zeros(high_score, 5);
+//     DrawTextEx(ui.font, high_scr_txt.c_str(), {655, 40}, 34, 2, ui.yellow);
+// }
+
+// // Function to draw the game over screen
+// void Game::draw_gameover() {
+//     // Draw UI Components
+//     ClearBackground(ui.grey);
+//     DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, ui.yellow);
+//     DrawLineEx({25, 730}, {775, 730}, 3, ui.yellow);
+//     std::string level_num = ui.format_level(level);
+//     std::string level = ui.level_display + " " + level_num;
+//     DrawTextEx(ui.font, level.c_str(), {565, 740}, 34, 2, ui.yellow);
+
+//     // Scoreboard
+//     DrawTextEx(ui.font, "SCORE", {50, 15}, 34, 2, ui.yellow);
+//     std::string score_txt = ui.format_trail_zeros(score, 5);
+//     DrawTextEx(ui.font, score_txt.c_str(), {50, 40}, 34, 2, ui.yellow);
+
+//     DrawTextEx(ui.font, "HIGH SCORE", {570, 15}, 34, 2, ui.yellow);
+//     std::string high_scr_txt = ui.format_trail_zeros(high_score, 5);
+//     DrawTextEx(ui.font, high_scr_txt.c_str(), {655, 40}, 34, 2, ui.yellow);
+// }
+
+// Function to draw the playing screen
+void Game::draw_playing() {
+    // Draw UI Components
+    ClearBackground(grey);
+    DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, yellow);
+    DrawLineEx({25, 730}, {775, 730}, 3, yellow);
+    std::string level_num = format_level(level);
+    std::string level = level_display + " " + level_num;
+    DrawTextEx(font, level.c_str(), {565, 740}, 34, 2, yellow);
+
+    // Lives remaining
+    float x = 50.0;
+    for(int i = 0; i < lives; i++) {
+        DrawTextureV(ship_image, {x, 745}, WHITE);
+        x += 50;
+    }
+    // Scoreboard
+    DrawTextEx(font, "SCORE", {50, 15}, 34, 2, yellow);
+    std::string score_txt = format_trail_zeros(score, 5);
+    DrawTextEx(font, score_txt.c_str(), {50, 40}, 34, 2, yellow);
+
+    DrawTextEx(font, "HIGH SCORE", {570, 15}, 34, 2, yellow);
+    std::string high_scr_txt = format_trail_zeros(high_score, 5);
+    DrawTextEx(font, high_scr_txt.c_str(), {655, 40}, 34, 2, yellow);
+    draw();
 }
 
 // Function to delete lasers to protect memory resources
@@ -419,5 +514,23 @@ void Game::update_gameover() {
 void Game::update_paused() {
     if(IsKeyPressed(KEY_R)) {
         state = GameState::Playing;
+    }
+}
+
+// Function to format the scores
+std::string Game::format_trail_zeros(int number, int width) {
+    std::string num_text = std::to_string(number);
+    int trailing_zeros = width - num_text.length();
+    return num_text = std::string(trailing_zeros, '0') + num_text;
+}
+
+// Function to reformat level displayed on UI
+std::string Game::format_level(int number) {
+    if(number < 10) {
+        std::string num_text = std::to_string(number);
+        return num_text = '0' + num_text;
+    } else {
+        std::string num_text = std::to_string(number);
+        return num_text;
     }
 }

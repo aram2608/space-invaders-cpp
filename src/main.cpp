@@ -35,52 +35,15 @@ All you need is a font file and the LoadFontEx
 
 */
 
-// Function to reformat a string with leading zeros
-std::string format_trail_zeros(int number, int width) {
-    std::string num_text = std::to_string(number);
-    int trailing_zeros = width - num_text.length();
-    return num_text = std::string(trailing_zeros, '0') + num_text;
-}
-
-// Function to reformat level displayed on UI
-std::string format_level(int number) {
-    if(number < 10) {
-        std::string num_text = std::to_string(number);
-        return num_text = '0' + num_text;
-    } else {
-        std::string num_text = std::to_string(number);
-        return num_text;
-    }
-}
-
 int main() {
-
-    // Constants //
-    Color grey = {29, 29, 27, 255};
-    Color yellow = {243, 216, 63, 255};
     int off_set = 50;
     int window_w = 750;
     int window_h = 700;
-    std::string level_display = "LEVEL";
 
     // Game window Audio Device //
     // INITIALIZE FIRST BEFORE LOADING GPU RESOURCES //
     InitWindow(window_w + off_set, window_h + (2 * off_set), "C++ - Space Invaders");
     InitAudioDevice();
-
-    // Constant to keep track of screen height and width for text calculations/placements
-    Vector2 center = { GetScreenHeight() / 2.0f, GetScreenWidth() / 2.0f };
-
-    // Font - 64 pixels in size
-    Font font = LoadFontEx("font/monogram.ttf", 64, 0, 0);
-
-    // Calculations for Title Screen
-    Vector2 high_scr_title_size = MeasureTextEx(font, "HIGH SCORE", 34, 2);
-    Vector2 title_size = MeasureTextEx(font, "SPACE INVADERS", 80, 2);
-    Vector2 text_size = MeasureTextEx(font, "RETURN TO START GAME", 34, 2);
-
-    // UI component to display number of lives remaining
-    Texture2D ship_image = LoadTexture("assets/spaceship.png");
 
     // Target FPS of 60
     SetTargetFPS(60);
@@ -104,45 +67,13 @@ int main() {
         // Main logic for drawing to game window
         BeginDrawing();
 
-            // Playing game state graphics
+            // Track game state and display proper graphics
             if(game.state == GameState::Playing) {
-                // Draw UI Components
-                ClearBackground(grey);
-                DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, yellow);
-                DrawLineEx({25, 730}, {775, 730}, 3, yellow);
-                std::string level_num = format_level(game.level);
-                std::string level = level_display + " " + level_num;
-                DrawTextEx(font, level.c_str(), {565, 740}, 34, 2, yellow);
-
-                // Lives remaining
-                float x = 50.0;
-                for(int i = 0; i < game.lives; i++) {
-                    DrawTextureV(ship_image, {x, 745}, WHITE);
-                    x += 50;
-                }
-                // Scoreboard
-                DrawTextEx(font, "SCORE", {50, 15}, 34, 2, yellow);
-                std::string score_txt = format_trail_zeros(game.score, 5);
-                DrawTextEx(font, score_txt.c_str(), {50, 40}, 34, 2, yellow);
-
-                DrawTextEx(font, "HIGH SCORE", {570, 15}, 34, 2, yellow);
-                std::string high_scr_txt = format_trail_zeros(game.high_score, 5);
-                DrawTextEx(font, high_scr_txt.c_str(), {655, 40}, 34, 2, yellow);
-                game.draw();
+                game.draw_playing();
             } else {
-                // Draw UI Components
-                ClearBackground(grey);
-                DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, yellow);
-
-                // Title screen text
-                DrawTextEx(font, "SPACE INVADERS", {center.x - title_size.x / 2, (center.y - title_size.y / 2) - 50}, 80, 2, yellow);
-                DrawTextEx(font, "RETURN TO START GAME", {center.x - text_size.x / 2, (center.y - text_size.y / 2) + 20}, 34, 2, yellow);
-                DrawTextEx(font, "HIGH SCORE", {center.x - high_scr_title_size.x / 2, (center.y - high_scr_title_size.y / 2) + 200}, 34, 2, yellow);
-                // Formatting for high score loaded from file
-                std::string high_scr_txt = format_trail_zeros(game.high_score, 5);
-                Vector2 scr_txt_size = MeasureTextEx(font, high_scr_txt.c_str(), 34, 2);
-                DrawTextEx(font, high_scr_txt.c_str(), {center.x - scr_txt_size.x / 2, (center.y - scr_txt_size.y / 2) + 230}, 34, 2, yellow);
+                game.draw_title();
             }
+
         EndDrawing();
     }
     // Close our game window

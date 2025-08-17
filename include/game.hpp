@@ -15,6 +15,15 @@ public:
     ~Game();
     // Function to draw events onto game window
     void draw();
+    // Function to draw the title screen
+    void draw_title();
+    // // Function to draw the paused screen
+    // void draw_paused();
+    // // Function to draw the game over screen
+    // void draw_gameover();
+    // Function to draw the playing screen
+    void draw_playing();
+
     // Function to update the events on screen
     void update();
     // Function to handle IO logic for game events
@@ -67,11 +76,16 @@ private:
     int load_score_file();
     // Function to progress to new level
     std::vector<Alien> new_level();
+    // Function to format the scores
+    std::string format_trail_zeros(int number, int width);
+    // Function to reformat level displayed on UI
+    std::string format_level(int number);
 
     SpaceShip ship;
     std::vector<Obstacle> obstacles;
     std::vector<Alien> aliens;
     MysteryShip mystery_ship;
+    //UI ui;
     int alien_dir;
     std::vector<Laser> al_lasers;
     constexpr static float al_shot_intv = 0.35;
@@ -80,4 +94,13 @@ private:
     float lst_myst_spwn;
     Sound explosion_sound;
     Sound game_over_sound;
+    Texture2D ship_image;
+    Font font;
+    Vector2 high_scr_title_size;
+    Vector2 title_size;
+    Vector2 text_size;
+    Vector2 screen_center;
+    Color grey;
+    std::string level_display;
+    Color yellow;
 };
