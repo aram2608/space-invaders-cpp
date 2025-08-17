@@ -377,9 +377,6 @@ void Game::check_collisions() {
         if(CheckCollisionRecs(laser.get_rect(), ship.get_rect())) {
             laser.active = false;
             lives --;
-            if(lives == 0) {
-                game_over();
-            }
         }
         // Iterate over obstacles vector to check for collisions
         for(auto& obs: obstacles) {
@@ -411,9 +408,6 @@ void Game::check_collisions() {
         if(CheckCollisionRecs(alien.get_rect(), ship.get_rect())) {
             lives --;
             ship.reset();
-            if(lives == 0) {
-                game_over();
-            }
         }
     }
     // Obstacle/ship collision
@@ -424,9 +418,6 @@ void Game::check_collisions() {
                     it = obs.blocks.erase(it);
                     lives --;
                     ship.reset();
-                    if(lives == 0) {
-                        game_over();
-                    }
                 } else {
                     it++;
                 }
@@ -459,11 +450,6 @@ void Game::reset() {
     al_lasers.clear();
     obstacles.clear();
     level = 0;
-}
-
-// Function to terminate game when lives reach zero
-void Game::game_over() {
-    PlaySound(game_over_sound);
 }
 
 // Function to update high score
@@ -524,7 +510,7 @@ void Game::update_playing() {
         update();
         if(lives <= 0) {
             state = GameState::GameOver;
-            game_over();
+            PlaySound(game_over_sound);
         }
     }
 }
