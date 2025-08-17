@@ -4,24 +4,24 @@
 
 // Constructor - Game
 Game::Game() {
+    // Game assets
     music = LoadMusicStream("audio/bgm_loud.ogg");
     explosion_sound = LoadSound("audio/explosion.ogg");
     game_over_sound = LoadSound("audio/game_over.ogg");
     PlayMusicStream(music);
+
+    // Initialize starting parameters
     init();
     new_game = 0;
     state = GameState::Title;
-    // Textures
+
+    // Textures for UI
     ship_image = LoadTexture("assets/spaceship.png");
     font = LoadFontEx("font/monogram.ttf", 64, 0, 0);;
 
-    // Hard coded UI components
-    high_scr_title_size = MeasureTextEx(font, "HIGH SCORE", 34, 2);
-    title_size = MeasureTextEx(font, "SPACE INVADERS", 80, 2);
-    text_size = MeasureTextEx(font, "RETURN TO START GAME", 34, 2);
+    // Hard coded values for UI
     screen_center = { GetScreenHeight() / 2.0f, GetScreenWidth() / 2.0f };
     grey = {29, 29, 27, 255};
-    level_display = "LEVEL";
     yellow = {243, 216, 63, 255};
 }
 
@@ -31,6 +31,8 @@ Game::~Game() {
     UnloadMusicStream(music);
     UnloadSound(explosion_sound);
     UnloadSound(game_over_sound);
+    UnloadTexture(ship_image);
+    UnloadFont(font);
 }
 
 // Function to update the events on screen
@@ -99,13 +101,18 @@ void Game::draw() {
 
 // Function to draw the title screen
 void Game::draw_title() {
+    // Hard coded UI components
+    high_scr_title_size = MeasureTextEx(font, "HIGH SCORE", 34, 2);
+    title_size = MeasureTextEx(font, "SPACE INVADERS", 80, 2);
+    start_text_size = MeasureTextEx(font, "RETURN TO START GAME", 34, 2);
+
     // Draw UI Components
     ClearBackground(grey);
     DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, yellow);
 
     // Title screen text
     DrawTextEx(font, "SPACE INVADERS", {screen_center.x - title_size.x / 2, (screen_center.y - title_size.y / 2) - 50}, 80, 2, yellow);
-    DrawTextEx(font, "RETURN TO START GAME", {screen_center.x - text_size.x / 2, (screen_center.y - text_size.y / 2) + 20}, 34, 2, yellow);
+    DrawTextEx(font, "RETURN TO START GAME", {screen_center.x - start_text_size.x / 2, (screen_center.y - start_text_size.y / 2) + 20}, 34, 2, yellow);
     DrawTextEx(font, "HIGH SCORE", {screen_center.x - high_scr_title_size.x / 2, (screen_center.y - high_scr_title_size.y / 2) + 200}, 34, 2, yellow);
     // Formatting for high score loaded from file
     std::string high_scr_txt = format_trail_zeros(high_score, 5);
@@ -113,48 +120,66 @@ void Game::draw_title() {
     DrawTextEx(font, high_scr_txt.c_str(), {screen_center.x - scr_txt_size.x / 2, (screen_center.y - scr_txt_size.y / 2) + 230}, 34, 2, yellow);
 }
 
-// // Function to draw the paused screen
-// void Game::draw_paused() {
-//     // Draw UI Components
-//     ClearBackground(ui.grey);
-//     DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, ui.yellow);
-//     DrawLineEx({25, 730}, {775, 730}, 3, ui.yellow);
-//     std::string level_num = ui.format_level(level);
-//     std::string level = ui.level_display + " " + level_num;
-//     DrawTextEx(ui.font, level.c_str(), {565, 740}, 34, 2, ui.yellow);
+// Function to draw the paused screen
+void Game::draw_paused() {
+    // Hard coded UI components
+    paused_txt = MeasureTextEx(font, "PAUSED", 80, 2);
+    start_text_size = MeasureTextEx(font, "RETURN TO START GAME", 34, 2);
 
-//     // Scoreboard
-//     DrawTextEx(ui.font, "SCORE", {50, 15}, 34, 2, ui.yellow);
-//     std::string score_txt = ui.format_trail_zeros(score, 5);
-//     DrawTextEx(ui.font, score_txt.c_str(), {50, 40}, 34, 2, ui.yellow);
+    // Draw UI Components
+    ClearBackground(grey);
+    DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, yellow);
+    DrawLineEx({25, 730}, {775, 730}, 3, yellow);
+    std::string level_num = format_level(level);
+    std::string level = level_display + " " + level_num;
+    DrawTextEx(font, level.c_str(), {565, 740}, 34, 2, yellow);
 
-//     DrawTextEx(ui.font, "HIGH SCORE", {570, 15}, 34, 2, ui.yellow);
-//     std::string high_scr_txt = ui.format_trail_zeros(high_score, 5);
-//     DrawTextEx(ui.font, high_scr_txt.c_str(), {655, 40}, 34, 2, ui.yellow);
-// }
+    // Paused title
+    DrawTextEx(font, "PAUSED", {screen_center.x - paused_txt.x / 2, (screen_center.y - paused_txt.y / 2) - 50}, 80, 2, yellow);
+    DrawTextEx(font, "RETURN TO START GAME", {screen_center.x - start_text_size.x / 2, (screen_center.y - start_text_size.y / 2) + 20}, 34, 2, yellow);
 
-// // Function to draw the game over screen
-// void Game::draw_gameover() {
-//     // Draw UI Components
-//     ClearBackground(ui.grey);
-//     DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, ui.yellow);
-//     DrawLineEx({25, 730}, {775, 730}, 3, ui.yellow);
-//     std::string level_num = ui.format_level(level);
-//     std::string level = ui.level_display + " " + level_num;
-//     DrawTextEx(ui.font, level.c_str(), {565, 740}, 34, 2, ui.yellow);
+    // Lives remaining
+    float x = 50.0;
+    for(int i = 0; i < lives; i++) {
+        DrawTextureV(ship_image, {x, 745}, WHITE);
+        x += 50;
+    }
 
-//     // Scoreboard
-//     DrawTextEx(ui.font, "SCORE", {50, 15}, 34, 2, ui.yellow);
-//     std::string score_txt = ui.format_trail_zeros(score, 5);
-//     DrawTextEx(ui.font, score_txt.c_str(), {50, 40}, 34, 2, ui.yellow);
+    // Scoreboard
+    DrawTextEx(font, "SCORE", {50, 15}, 34, 2, yellow);
+    std::string score_txt = format_trail_zeros(score, 5);
+    DrawTextEx(font, score_txt.c_str(), {50, 40}, 34, 2, yellow);
 
-//     DrawTextEx(ui.font, "HIGH SCORE", {570, 15}, 34, 2, ui.yellow);
-//     std::string high_scr_txt = ui.format_trail_zeros(high_score, 5);
-//     DrawTextEx(ui.font, high_scr_txt.c_str(), {655, 40}, 34, 2, ui.yellow);
-// }
+    DrawTextEx(font, "HIGH SCORE", {570, 15}, 34, 2, yellow);
+    std::string high_scr_txt = format_trail_zeros(high_score, 5);
+    DrawTextEx(font, high_scr_txt.c_str(), {655, 40}, 34, 2, yellow);
+}
+
+// Function to draw the game over screen
+void Game::draw_gameover() {
+    // Hard coded UI components
+    game_over_title_size = MeasureTextEx(font, "GAME OVER", 80, 2);
+    retry_text_size = MeasureTextEx(font, "RETURN TO TRY AGAIN", 34, 2);
+
+    // Draw UI Components
+    ClearBackground(grey);
+    DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, yellow);
+
+    // Game over screen text
+    DrawTextEx(font, "GAME OVER", {screen_center.x - game_over_title_size.x / 2, (screen_center.y -game_over_title_size.y / 2) - 50}, 80, 2, yellow);
+    DrawTextEx(font, "RETURN TO TRY AGAIN", {screen_center.x - retry_text_size.x / 2, (screen_center.y - retry_text_size.y / 2) + 20}, 34, 2, yellow);
+
+    // Scoreboard
+    DrawTextEx(font, "SCORE", {50, 15}, 34, 2, yellow);
+    std::string score_txt = format_trail_zeros(score, 5);
+    DrawTextEx(font, score_txt.c_str(), {50, 40}, 34, 2, yellow);
+}
 
 // Function to draw the playing screen
 void Game::draw_playing() {
+    // Hard coded UI components
+    level_display = "LEVEL";
+
     // Draw UI Components
     ClearBackground(grey);
     DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, yellow);
@@ -177,6 +202,8 @@ void Game::draw_playing() {
     DrawTextEx(font, "HIGH SCORE", {570, 15}, 34, 2, yellow);
     std::string high_scr_txt = format_trail_zeros(high_score, 5);
     DrawTextEx(font, high_scr_txt.c_str(), {655, 40}, 34, 2, yellow);
+
+    // Draw game assets
     draw();
 }
 
@@ -507,6 +534,10 @@ void Game::update_gameover() {
         reset();
         init();
         state = GameState::Playing;
+    }
+    if(IsKeyPressed(KEY_T)) {
+        reset();
+        state = GameState::Title;
     }
 }
 

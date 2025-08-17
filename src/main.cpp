@@ -68,10 +68,15 @@ int main() {
         BeginDrawing();
 
             // Track game state and display proper graphics
+            // I tried a switch block but it made it pretty laggy for some reason
             if(game.state == GameState::Playing) {
                 game.draw_playing();
-            } else {
+            } else if (game.state == GameState::Paused) {
+                game.draw_paused();
+            } else if (game.state == GameState::Title) {
                 game.draw_title();
+            } else if (game.state == GameState::GameOver) {
+                game.draw_gameover();
             }
 
         EndDrawing();

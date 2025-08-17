@@ -17,10 +17,10 @@ public:
     void draw();
     // Function to draw the title screen
     void draw_title();
-    // // Function to draw the paused screen
-    // void draw_paused();
-    // // Function to draw the game over screen
-    // void draw_gameover();
+    // Function to draw the paused screen
+    void draw_paused();
+    // Function to draw the game over screen
+    void draw_gameover();
     // Function to draw the playing screen
     void draw_playing();
 
@@ -94,12 +94,18 @@ private:
     float lst_myst_spwn;
     Sound explosion_sound;
     Sound game_over_sound;
+
+    // UI component measurements
     Texture2D ship_image;
     Font font;
     Vector2 high_scr_title_size;
     Vector2 title_size;
-    Vector2 text_size;
+    Vector2 game_over_title_size;
+    Vector2 retry_text_size;
+    Vector2 start_text_size;
+    Vector2 gameover_scr_size;
     Vector2 screen_center;
+    Vector2 paused_txt;
     Color grey;
     std::string level_display;
     Color yellow;
