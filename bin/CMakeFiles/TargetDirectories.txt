@@ -1,5 +1,0 @@
-/Users/ja1473/projects/space-invaders-cpp/bin/CMakeFiles/edit_cache.dir
-/Users/ja1473/projects/space-invaders-cpp/bin/CMakeFiles/rebuild_cache.dir
-/Users/ja1473/projects/space-invaders-cpp/bin/src/CMakeFiles/space-invaders.dir
-/Users/ja1473/projects/space-invaders-cpp/bin/src/CMakeFiles/edit_cache.dir
-/Users/ja1473/projects/space-invaders-cpp/bin/src/CMakeFiles/rebuild_cache.dir

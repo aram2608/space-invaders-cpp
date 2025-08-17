@@ -36,6 +36,7 @@ All you need is a font file and the LoadFontEx
 */
 
 int main() {
+    // Hard coded window values w/offest
     int off_set = 50;
     int window_w = 750;
     int window_h = 700;
