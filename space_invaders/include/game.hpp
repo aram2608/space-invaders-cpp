@@ -97,6 +97,7 @@ private:
     Sound explosion_sound;
     Sound game_over_sound;
     Sound ship_hit_sound;
+    Sound aliens_sound;
 
     // UI component measurements
     Texture2D ship_image;

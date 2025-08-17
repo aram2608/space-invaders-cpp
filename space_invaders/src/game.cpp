@@ -9,6 +9,7 @@ Game::Game() {
     explosion_sound = LoadSound("audio/explosion.ogg");
     game_over_sound = LoadSound("audio/game_over.ogg");
     ship_hit_sound = LoadSound("audio/ship_hit.ogg");
+    aliens_sound = LoadSound("audio/alien_step.ogg");
     PlayMusicStream(music);
 
     // Textures for UI
@@ -31,6 +32,7 @@ Game::~Game() {
     UnloadSound(explosion_sound);
     UnloadSound(game_over_sound);
     UnloadSound(ship_hit_sound);
+    UnloadSound(aliens_sound);
     UnloadTexture(ship_image);
     UnloadFont(font);
 }
@@ -288,11 +290,13 @@ void Game::move_aliens() {
         if(alien.position.x + alien.alien_images[alien.type - 1].width > GetScreenWidth() - 25) {
             alien_dir = -1;
             aliens_down(4);
+            PlaySound(aliens_sound);
         }
         // Left side of screen
         if(alien.position.x < 25) {
             alien_dir = 1;
             aliens_down(4);
+            PlaySound(aliens_sound);
         }
         // Update movement
         alien.update(alien_dir);

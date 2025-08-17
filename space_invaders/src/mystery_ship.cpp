@@ -3,12 +3,14 @@
 // Constructor - MysteryShip
 MysteryShip::MysteryShip() {
     image = LoadTexture("assets/mystery.png");
+    myst_ship_sound = LoadSound("audio/mystery_ship.ogg");
     alive = false;
 }
 
 // Deconstructor - MysteryShip
 MysteryShip::~MysteryShip() {
     UnloadTexture(image);
+    UnloadSound(myst_ship_sound);
 }
 
 // Function to randomly spawn mystery ship at the top of the game window
@@ -24,6 +26,7 @@ void MysteryShip::spawn() {
         speed = -3;
     }
     alive = true;
+    PlaySound(myst_ship_sound);
 }
 // Function to get rectangle for mystery ship
 Rectangle MysteryShip::get_rect() {
