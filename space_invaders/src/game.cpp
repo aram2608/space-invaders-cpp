@@ -484,8 +484,8 @@ int Game::load_score_file() {
 }
 
 // Function to progress to new level
+// Starts by assinging level to 1
 std::vector<Alien> Game::check_level() {
-    // Check to see if it is the start of the game
     if(aliens.empty()) {
         level ++;
         aliens = create_fleet();

@@ -15,19 +15,24 @@ public:
     ~Game();
     // Function to draw events onto game window
     void draw();
-    // Function to draw the title screen
-    void draw_title();
-    // Function to draw the paused screen
-    void draw_paused();
-    // Function to draw the game over screen
-    void draw_gameover();
-    // Function to draw the playing screen
-    void draw_playing();
-
     // Function to update the events on screen
     void update();
     // Function to handle IO logic for game events
     void handle_input();
+
+    ///// UI FUNCTIONS //////
+
+    // Function to draw the title screen
+    void draw_title();
+    // Function to draw the paused screen
+    void draw_paused();
+    // Function to draw the playing screen
+    void draw_playing();
+    // Function to draw gameover screen
+    void draw_gameover();
+
+    ///// GAME STATE MANAGERS /////
+
     // Function to handle title game state
     void update_title();
     // Function to handle playing game state
@@ -41,31 +46,14 @@ public:
     int score;
     int high_score;
     int level;
-
     GameState state = GameState::Title;
     Music music;
 
 private:
-    // Function to delete lasers to protect memory resources
-    void delete_laser();
-    // Function to return a vector of obstacles for the game window
-    std::vector<Obstacle> make_obs();
-    // Function to create a vector of aliens to spawn a fleet into game window
-    std::vector<Alien> create_fleet();
-    // Function to shift fleet position on game window
-    void move_aliens();
-    // Function to move entire fleet of aliens down the y direction
-    void aliens_down(int distance);
-    // Function handle firing logic for alien fleet
-    void aliens_shoot();
-    // Function to handle collisions
-    void check_collisions();
     // Function to initialize game parameters
     void init();
     // Function to reset game after game over
     void reset();
-    // Function to terminate game when lives reach zero
-    void game_over();
     // Function to update high score
     void score_check();
     // Function to save high score to a text file
@@ -74,6 +62,23 @@ private:
     int load_score_file();
     // Function to check the current level
     std::vector<Alien> check_level();
+    // Function to handle collisions
+    void check_collisions();
+
+    // Function to delete lasers to protect memory resources
+    void delete_laser();
+    // Function to return a vector of obstacles for the game window
+    std::vector<Obstacle> make_obs();
+
+    // Function to create a vector of aliens to spawn a fleet into game window
+    std::vector<Alien> create_fleet();
+    // Function to shift fleet position on game window
+    void move_aliens();
+    // Function to move entire fleet of aliens down the y direction
+    void aliens_down(int distance);
+    // Function handle firing logic for alien fleet
+    void aliens_shoot();
+
     // Function to format the scores
     std::string format_trail_zeros(int number, int width);
     // Function to reformat level displayed on UI
