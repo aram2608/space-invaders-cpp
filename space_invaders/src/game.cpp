@@ -66,8 +66,8 @@ void Game::update() {
         // Collision handling logic
         check_collisions();
 
-        // Check aliens
-        new_level();
+        // Checks and advances level
+        check_level();
     }
 }
 
@@ -445,7 +445,7 @@ void Game::init() {
     high_score = load_score_file();
     // Assets/aliens
     obstacles = make_obs();
-    aliens = new_level();
+    aliens = check_level();
     alien_dir = 1;
     // Mystery Ship params
     last_al_laser_time = 0.0;
@@ -459,6 +459,7 @@ void Game::reset() {
     aliens.clear();
     al_lasers.clear();
     obstacles.clear();
+    level = 0;
 }
 
 // Function to terminate game when lives reach zero
@@ -499,7 +500,7 @@ int Game::load_score_file() {
 }
 
 // Function to progress to new level
-std::vector<Alien> Game::new_level() {
+std::vector<Alien> Game::check_level() {
     // Check to see if it is the start of the game
     if(aliens.empty()) {
         level ++;

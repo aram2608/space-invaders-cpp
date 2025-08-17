@@ -73,8 +73,8 @@ private:
     void save_high_scr(int high_scr);
     // Function to load a high score at start of game from text file
     int load_score_file();
-    // Function to progress to new level
-    std::vector<Alien> new_level();
+    // Function to check the current level
+    std::vector<Alien> check_level();
     // Function to format the scores
     std::string format_trail_zeros(int number, int width);
     // Function to reformat level displayed on UI
