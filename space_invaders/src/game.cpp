@@ -36,7 +36,7 @@ Game::~Game() {
 // Function to update the events on screen
 void Game::update() {
     // Only active while game state is on
-    if(run) {
+    if(state == GameState::Playing) {
         // Logic to handling spawn time of mystery ship
         double curr_t = GetTime();
         if(curr_t - lst_myst_spwn > myst_ship_intv) {
@@ -268,7 +268,7 @@ std::vector<Alien> Game::create_fleet() {
 
 // Function to handle IO logic for game events
 void Game::handle_input() {
-    if(run) {
+    if(state == GameState::Playing) {
         if(IsKeyDown(KEY_LEFT))     ship.move_left(); 
         if (IsKeyDown(KEY_RIGHT))   ship.move_right();
         if (IsKeyDown(KEY_UP))      ship.move_up();
@@ -440,7 +440,6 @@ void Game::init() {
     state = GameState::Title;
     // Player params
     lives = 3;
-    run = true;
     score = 0;
     high_score = load_score_file();
     // Assets/aliens
@@ -465,7 +464,6 @@ void Game::reset() {
 // Function to terminate game when lives reach zero
 void Game::game_over() {
     PlaySound(game_over_sound);
-    run = false;
 }
 
 // Function to update high score

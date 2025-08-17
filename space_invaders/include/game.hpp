@@ -38,7 +38,6 @@ public:
     void update_paused();
 
     int lives;
-    bool run;
     int score;
     int high_score;
     int level;
