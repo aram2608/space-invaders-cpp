@@ -9,5 +9,5 @@
 - [x] Check for collisions
 - [x] Game over
 - [x] Scoring
-- [] Add high scores
-- [] Add sounds
+- [x] Add high scores
+- [x] Add sounds
