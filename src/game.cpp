@@ -154,14 +154,7 @@ void Game::handle_input() {
         if (IsKeyDown(KEY_UP))      ship.move_up();
         if (IsKeyDown(KEY_DOWN))    ship.move_down();
         if (IsKeyDown(KEY_SPACE))   ship.fire_laser();
-    } else {
-        // Resets and initializes new game
-        if(IsKeyDown(KEY_ENTER)) {
-            reset();
-            init();
-            run = true;
-        }
-    }
+    } 
 }
 
 // Function to shift fleet position on game window
@@ -330,7 +323,7 @@ void Game::init() {
     lst_myst_spwn = 0.0;
     myst_ship_intv = GetRandomValue(10, 20);
     lives = 3;
-    run = false;
+    run = true;
     score = 0;
     high_score = load_score_file();
     level = 1;
@@ -401,11 +394,15 @@ void Game::update_title() {
 
 // Function to handle playing game state
 void Game::update_playing() {
-    handle_input();
-    update();
-    if(lives <= 0) {
-        state = GameState::GameOver;
-        game_over();
+    if(IsKeyPressed(KEY_P)) {
+        state = GameState::Paused;
+    } else {
+        handle_input();
+        update();
+        if(lives <= 0) {
+            state = GameState::GameOver;
+            game_over();
+        }
     }
 }
 
@@ -414,6 +411,13 @@ void Game::update_gameover() {
     if(IsKeyPressed(KEY_ENTER)) {
         reset();
         init();
+        state = GameState::Playing;
+    }
+}
+
+// Function to handle paused stated
+void Game::update_paused() {
+    if(IsKeyPressed(KEY_R)) {
         state = GameState::Playing;
     }
 }

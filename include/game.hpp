@@ -5,8 +5,7 @@
 #include "mystery_ship.hpp"
 
 // Enum class to handle game states
-// Paused
-enum class GameState { Title, Playing, GameOver };
+enum class GameState { Title, Playing, Paused, GameOver };
 
 class Game {
 public:
@@ -26,6 +25,8 @@ public:
     void update_playing();
     // Function to handle gameover state
     void update_gameover();
+    // Function to handle paused stated
+    void update_paused();
 
     int lives;
     bool run;

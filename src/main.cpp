@@ -83,13 +83,11 @@ int main() {
         // Tunes
         UpdateMusicStream(game.music);
 
-        // Handles game inputs
-        //game.handle_input();
-        //game.update();
-
+        // Handles game inputs by state
         switch (game.state) {
             case GameState::Title: game.update_title(); break;
             case GameState::Playing: game.update_playing(); break;
+            case GameState::Paused: game.update_paused(); break;
             case GameState::GameOver: game.update_gameover(); break;
         }
 
