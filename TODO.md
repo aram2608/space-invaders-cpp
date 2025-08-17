@@ -11,6 +11,6 @@
 - [x] Scoring
 - [x] Add high scores
 - [x] Add sounds
-- [] Add different game states
-- [] Add title screen and paused screen
+- [x] Add different game states
+- [x] Add title screen and paused screen
 - [] Refactor and improve code
