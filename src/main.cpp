@@ -93,7 +93,6 @@ int main() {
 
         // Main logic for drawing to game window
         BeginDrawing();
-
             // Draw UI Components
             ClearBackground(grey);
             DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, yellow);
