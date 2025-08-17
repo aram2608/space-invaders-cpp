@@ -42,7 +42,6 @@ public:
     int score;
     int high_score;
     int level;
-    int new_game;
 
     GameState state = GameState::Title;
     Music music;
@@ -86,7 +85,6 @@ private:
     std::vector<Alien> aliens;
     MysteryShip mystery_ship;
     int alien_dir;
-    int alien_spd;
     std::vector<Laser> al_lasers;
     constexpr static float al_shot_intv = 0.35;
     float last_al_laser_time;

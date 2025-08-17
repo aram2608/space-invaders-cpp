@@ -10,11 +10,6 @@ Game::Game() {
     game_over_sound = LoadSound("audio/game_over.ogg");
     PlayMusicStream(music);
 
-    // Initialize starting parameters
-    init();
-    new_game = 0;
-    state = GameState::Title;
-
     // Textures for UI
     ship_image = LoadTexture("assets/spaceship.png");
     font = LoadFontEx("font/monogram.ttf", 64, 0, 0);;
@@ -23,6 +18,9 @@ Game::Game() {
     screen_center = { GetScreenHeight() / 2.0f, GetScreenWidth() / 2.0f };
     grey = {29, 29, 27, 255};
     yellow = {243, 216, 63, 255};
+
+    // Initialize starting parameters
+    init();
 }
 
 // Deconstructor - Game
@@ -131,8 +129,8 @@ void Game::draw_paused() {
     DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, yellow);
     DrawLineEx({25, 730}, {775, 730}, 3, yellow);
     std::string level_num = format_level(level);
-    std::string level = level_display + " " + level_num;
-    DrawTextEx(font, level.c_str(), {565, 740}, 34, 2, yellow);
+    std::string level_s = level_display + " " + level_num;
+    DrawTextEx(font, level_s.c_str(), {565, 740}, 34, 2, yellow);
 
     // Paused title
     DrawTextEx(font, "PAUSED", {screen_center.x - paused_txt.x / 2, (screen_center.y - paused_txt.y / 2) - 50}, 80, 2, yellow);
@@ -185,8 +183,8 @@ void Game::draw_playing() {
     DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, yellow);
     DrawLineEx({25, 730}, {775, 730}, 3, yellow);
     std::string level_num = format_level(level);
-    std::string level = level_display + " " + level_num;
-    DrawTextEx(font, level.c_str(), {565, 740}, 34, 2, yellow);
+    std::string level_s = level_display + " " + level_num;
+    DrawTextEx(font, level_s.c_str(), {565, 740}, 34, 2, yellow);
 
     // Lives remaining
     float x = 50.0;
@@ -286,12 +284,12 @@ void Game::move_aliens() {
     for(auto& alien: aliens) {
         // Right side of screen
         if(alien.position.x + alien.alien_images[alien.type - 1].width > GetScreenWidth() - 25) {
-            alien_dir = -alien_spd;
+            alien_dir = -1;
             aliens_down(4);
         }
         // Left side of screen
         if(alien.position.x < 25) {
-            alien_dir = alien_spd;
+            alien_dir = 1;
             aliens_down(4);
         }
         // Update movement
@@ -438,21 +436,21 @@ void Game::check_collisions() {
 
 // Function to initialize game parameters
 void Game::init() {
-    // Assets/aliens
-    obstacles = make_obs();
-    aliens = new_level();
-    alien_dir = 1;
-    alien_spd = 1;
-    // Mystery Ship params
-    last_al_laser_time = 0.0;
-    lst_myst_spwn = 0.0;
-    myst_ship_intv = GetRandomValue(10, 20);
+    // Starting game state
+    state = GameState::Title;
     // Player params
     lives = 3;
     run = true;
     score = 0;
     high_score = load_score_file();
-    level = 1;
+    // Assets/aliens
+    obstacles = make_obs();
+    aliens = new_level();
+    alien_dir = 1;
+    // Mystery Ship params
+    last_al_laser_time = 0.0;
+    lst_myst_spwn = 0.0;
+    myst_ship_intv = GetRandomValue(10, 20);
 }
 
 // Function to reset game after game over
@@ -467,7 +465,6 @@ void Game::reset() {
 void Game::game_over() {
     PlaySound(game_over_sound);
     run = false;
-    new_game ++;
 }
 
 // Function to update high score
@@ -503,11 +500,11 @@ int Game::load_score_file() {
 
 // Function to progress to new level
 std::vector<Alien> Game::new_level() {
+    // Check to see if it is the start of the game
     if(aliens.empty()) {
-        aliens = create_fleet();
         level ++;
-        alien_spd += 0.25;
-    }
+        aliens = create_fleet();
+    } 
     return aliens;
 }
 
