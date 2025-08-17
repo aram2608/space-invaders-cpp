@@ -96,6 +96,7 @@ private:
     float lst_myst_spwn;
     Sound explosion_sound;
     Sound game_over_sound;
+    Sound ship_hit_sound;
 
     // UI component measurements
     Texture2D ship_image;

@@ -8,6 +8,7 @@ Game::Game() {
     music = LoadMusicStream("audio/bgm_loud.ogg");
     explosion_sound = LoadSound("audio/explosion.ogg");
     game_over_sound = LoadSound("audio/game_over.ogg");
+    ship_hit_sound = LoadSound("audio/ship_hit.ogg");
     PlayMusicStream(music);
 
     // Textures for UI
@@ -29,6 +30,7 @@ Game::~Game() {
     UnloadMusicStream(music);
     UnloadSound(explosion_sound);
     UnloadSound(game_over_sound);
+    UnloadSound(ship_hit_sound);
     UnloadTexture(ship_image);
     UnloadFont(font);
 }
@@ -376,6 +378,7 @@ void Game::check_collisions() {
         // Check for ship/laser collisions
         if(CheckCollisionRecs(laser.get_rect(), ship.get_rect())) {
             laser.active = false;
+            PlaySound(ship_hit_sound);
             lives --;
         }
         // Iterate over obstacles vector to check for collisions
@@ -406,6 +409,7 @@ void Game::check_collisions() {
         }
         // Alien/ship collision
         if(CheckCollisionRecs(alien.get_rect(), ship.get_rect())) {
+            PlaySound(ship_hit_sound);
             lives --;
             ship.reset();
         }
@@ -416,6 +420,7 @@ void Game::check_collisions() {
             while(it != obs.blocks.end()) {
                 if(CheckCollisionRecs(it -> get_rect(), ship.get_rect())) {
                     it = obs.blocks.erase(it);
+                    PlaySound(ship_hit_sound);
                     lives --;
                     ship.reset();
                 } else {
