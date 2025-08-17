@@ -81,7 +81,7 @@ int main() {
     // Game loop. Runs will the window is not closed
     while (!WindowShouldClose()) {
         // Tunes
-        UpdateMusicStream(game.music);
+        if(game.state == GameState::Playing) UpdateMusicStream(game.music);
 
         // Handles game inputs by state
         switch (game.state) {
@@ -93,34 +93,41 @@ int main() {
 
         // Main logic for drawing to game window
         BeginDrawing();
-            // Draw UI Components
-            ClearBackground(grey);
-            DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, yellow);
-            DrawLineEx({25, 730}, {775, 730}, 3, yellow);
 
-            // Level of game
-            std::string level_num = format_level(game.level);
-            std::string level = level_display + " " + level_num;
-            DrawTextEx(font, level.c_str(), {565, 740}, 34, 2, yellow);
+            // Playing game state graphics
+            if(game.state == GameState::Playing) {
+                // Draw UI Components
+                ClearBackground(grey);
+                DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, yellow);
+                DrawLineEx({25, 730}, {775, 730}, 3, yellow);
+                std::string level_num = format_level(game.level);
+                std::string level = level_display + " " + level_num;
+                DrawTextEx(font, level.c_str(), {565, 740}, 34, 2, yellow);
 
-            // Lives remaining
-            float x = 50.0;
-            for(int i = 0; i < game.lives; i++) {
-                DrawTextureV(ship_image, {x, 745}, WHITE);
-                x += 50;
+                // Lives remaining
+                float x = 50.0;
+                for(int i = 0; i < game.lives; i++) {
+                    DrawTextureV(ship_image, {x, 745}, WHITE);
+                    x += 50;
+                }
+                // Scoreboard
+                DrawTextEx(font, "SCORE", {50, 15}, 34, 2, yellow);
+                std::string score_txt = format_trail_zeros(game.score, 5);
+                DrawTextEx(font, score_txt.c_str(), {50, 40}, 34, 2, yellow);
+
+                DrawTextEx(font, "HIGH SCORE", {570, 15}, 34, 2, yellow);
+                std::string high_scr_txt = format_trail_zeros(game.high_score, 5);
+                DrawTextEx(font, high_scr_txt.c_str(), {655, 40}, 34, 2, yellow);
+                game.draw();
+            } else {
+                // Draw UI Components
+                ClearBackground(grey);
+                DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, yellow);
+                DrawTextEx(font, "RETURN TO START GAME", {400, 400}, 34, 2, yellow);
             }
 
-            // Scoreboard
-            DrawTextEx(font, "SCORE", {50, 15}, 34, 2, yellow);
-            std::string score_txt = format_trail_zeros(game.score, 5);
-            DrawTextEx(font, score_txt.c_str(), {50, 40}, 34, 2, yellow);
-
-            DrawTextEx(font, "HIGH SCORE", {570, 15}, 34, 2, yellow);
-            std::string high_scr_txt = format_trail_zeros(game.high_score, 5);
-            DrawTextEx(font, high_scr_txt.c_str(), {655, 40}, 34, 2, yellow);
-
             // Draw all defined game assets
-            game.draw();
+            //game.draw();
         EndDrawing();
     }
     // Close our game window
