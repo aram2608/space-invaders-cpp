@@ -10,17 +10,17 @@ find_package(raylib 3.0 REQUIRED)
 find_package(glfw3 REQUIRED)
 
 add_executable(${PROJECT_NAME} 
-    src/main.cpp
-    src/spaceship.cpp
-    src/game.cpp
-    src/lasers.cpp
-    src/obstacle.cpp
-    src/block.cpp
-    src/aliens.cpp
-    src/mystery_ship.cpp
+    space_invaders/src/main.cpp
+    space_invaders/src/spaceship.cpp
+    space_invaders/src/game.cpp
+    space_invaders/src/lasers.cpp
+    space_invaders/src/obstacle.cpp
+    space_invaders/src/block.cpp
+    space_invaders/src/aliens.cpp
+    space_invaders/src/mystery_ship.cpp
 )
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/)
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/space_invaders/include/)
 
 target_link_libraries(${PROJECT_NAME} raylib glfw)
 
