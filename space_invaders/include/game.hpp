@@ -85,8 +85,8 @@ private:
     std::vector<Obstacle> obstacles;
     std::vector<Alien> aliens;
     MysteryShip mystery_ship;
-    //UI ui;
     int alien_dir;
+    int alien_spd;
     std::vector<Laser> al_lasers;
     constexpr static float al_shot_intv = 0.35;
     float last_al_laser_time;

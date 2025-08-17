@@ -286,12 +286,12 @@ void Game::move_aliens() {
     for(auto& alien: aliens) {
         // Right side of screen
         if(alien.position.x + alien.alien_images[alien.type - 1].width > GetScreenWidth() - 25) {
-            alien_dir = -1;
+            alien_dir = -alien_spd;
             aliens_down(4);
         }
         // Left side of screen
         if(alien.position.x < 25) {
-            alien_dir = 1;
+            alien_dir = alien_spd;
             aliens_down(4);
         }
         // Update movement
@@ -438,12 +438,16 @@ void Game::check_collisions() {
 
 // Function to initialize game parameters
 void Game::init() {
+    // Assets/aliens
     obstacles = make_obs();
     aliens = new_level();
     alien_dir = 1;
+    alien_spd = 1;
+    // Mystery Ship params
     last_al_laser_time = 0.0;
     lst_myst_spwn = 0.0;
     myst_ship_intv = GetRandomValue(10, 20);
+    // Player params
     lives = 3;
     run = true;
     score = 0;
@@ -502,6 +506,7 @@ std::vector<Alien> Game::new_level() {
     if(aliens.empty()) {
         aliens = create_fleet();
         level ++;
+        alien_spd += 0.25;
     }
     return aliens;
 }

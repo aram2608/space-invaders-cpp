@@ -63,4 +63,7 @@ system. I use a mac with arm64-osx so keep that in mind.
 git clone https://github.com/aram2608/space-invaders-cpp.git
 cd space-invaders-cpp
 ./make.sh
+
+# Run program
+./build/space_invaders
 ```
