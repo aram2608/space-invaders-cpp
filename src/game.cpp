@@ -543,7 +543,7 @@ void Game::update_gameover() {
 
 // Function to handle paused stated
 void Game::update_paused() {
-    if(IsKeyPressed(KEY_R)) {
+    if(IsKeyPressed(KEY_ENTER)) {
         state = GameState::Playing;
     }
 }
