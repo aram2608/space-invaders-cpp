@@ -14,3 +14,6 @@
 - [x] Add different game states
 - [x] Add title screen and paused screen
 - [] Refactor and improve code
+    -[] Cache reused text and load when needed
+    -[] Improve UI, display controls at title and paused screens
+    -[] Clean up functions so they make more sense
