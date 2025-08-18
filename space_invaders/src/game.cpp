@@ -10,7 +10,6 @@ Game::Game() {
     game_over_sound = LoadSound("audio/game_over.ogg");
     ship_hit_sound = LoadSound("audio/ship_hit.ogg");
     aliens_sound = LoadSound("audio/alien_step.ogg");
-    PlayMusicStream(music);
 
     // Textures for UI
     ship_image = LoadTexture("assets/spaceship.png");
@@ -511,6 +510,7 @@ std::vector<Alien> Game::check_level() {
 // Function to handle title game state
 void Game::update_title() {
     if(IsKeyPressed(KEY_ENTER)) {
+        PlayMusicStream(music);
         init();
         state = GameState::Playing;
     }
@@ -519,11 +519,13 @@ void Game::update_title() {
 // Function to handle playing game state
 void Game::update_playing() {
     if(IsKeyPressed(KEY_P)) {
+        PauseMusicStream(music);
         state = GameState::Paused;
     } else {
         handle_input();
         update();
         if(lives <= 0) {
+            PauseMusicStream(music);
             state = GameState::GameOver;
             PlaySound(game_over_sound);
         }
@@ -533,6 +535,7 @@ void Game::update_playing() {
 // Function to handle playing game state
 void Game::update_gameover() {
     if(IsKeyPressed(KEY_ENTER)) {
+        PlayMusicStream(music);
         reset();
         init();
         state = GameState::Playing;
@@ -546,6 +549,7 @@ void Game::update_gameover() {
 // Function to handle paused stated
 void Game::update_paused() {
     if(IsKeyPressed(KEY_ENTER)) {
+        PlayMusicStream(music);
         state = GameState::Playing;
     }
 }

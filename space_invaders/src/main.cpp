@@ -55,7 +55,7 @@ int main() {
     // Game loop. Runs will the window is not closed
     while (!WindowShouldClose()) {
         // Tunes
-        if(game.state == GameState::Playing) UpdateMusicStream(game.music);
+        UpdateMusicStream(game.music);
 
         // Handles game inputs by state
         switch (game.state) {
