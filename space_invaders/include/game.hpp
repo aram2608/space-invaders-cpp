@@ -13,6 +13,16 @@ public:
     Game();
     // Deconstructor - Game
     ~Game();
+
+    // Delete copy constructor 
+    Game(const Game&) = delete;
+    // Delete copy assignment operator
+    Game& operator=(const Game&) = delete;
+    // Delete move constructor
+    Game(Game&&) = delete;
+    // Delete move assignment operator
+    Game& operator=(Game&&) = delete;
+
     // Function to draw events onto game window
     void draw();
     // Function to update the events on screen

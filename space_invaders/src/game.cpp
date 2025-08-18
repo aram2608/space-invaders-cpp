@@ -14,10 +14,10 @@ Game::Game() {
 
     // Textures for UI
     ship_image = LoadTexture("assets/spaceship.png");
-    font = LoadFontEx("font/monogram.ttf", 64, 0, 0);;
+    font = LoadFontEx("font/monogram.ttf", 64, 0, 0);
 
     // Hard coded values for UI
-    screen_center = { GetScreenHeight() / 2.0f, GetScreenWidth() / 2.0f };
+    screen_center = { GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f };
     grey = {29, 29, 27, 255};
     yellow = {243, 216, 63, 255};
 
@@ -232,6 +232,9 @@ void Game::delete_laser() {
 
 // Function to return a vector of obstacles for the game window
 std::vector<Obstacle> Game::make_obs() {
+    // Declare our vector
+    std::vector<Obstacle> out;
+
     // Calculate obstacle width and gaps between obstacles
     int obs_w = Obstacle::grid[0].size() * 3;
     float obs_gap = (GetScreenWidth() - (4 * obs_w)) / 5;
@@ -239,14 +242,16 @@ std::vector<Obstacle> Game::make_obs() {
     // Iterate over the number of obstacles we want to make (4)
     for(int i = 0; i < 4; i++) {
         float off_x = (i + 1) * obs_gap + i * obs_w;
-        obstacles.push_back(Obstacle({off_x, float(GetScreenHeight() - 200)}));
+        // Appends a new element to the end of the container by constructing it in-place
+        // Apparently more efficient than pushback
+        out.emplace_back(Vector2{off_x, float(GetScreenHeight() - 200)});
     }
-    return obstacles;
+    return out;
 }
 
 // Function to create a vector of aliens to spawn a fleet into game window
 std::vector<Alien> Game::create_fleet() {
-    std::vector<Alien> aliens;
+    std::vector<Alien> out;
     // Iterate over a 5 row x 11 column grid to create a fleet of 55 aliens
     for(int row = 0; row < 5; row++) {
         for(int column = 0; column < 11; column++) {
@@ -264,10 +269,11 @@ std::vector<Alien> Game::create_fleet() {
             // Calculate x and y by an arbitrary cell_size of 55
             float x = 75 + column * 55;
             float y = 100 + row * 55;
-            aliens.push_back(Alien(alien_t, {x, y}));
+            // Construct Alien in place and add to vector
+            out.emplace_back(alien_t, Vector2{x, y});
         }
     }
-    return aliens;
+    return out;
 }
 
 // Function to handle IO logic for game events

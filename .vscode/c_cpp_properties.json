@@ -4,8 +4,7 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/Users/ja1473/dev/tools/vcpkg/packages/raylib_arm64-osx/include/",
-                "include/"
+                "/Users/ja1473/dev/tools/vcpkg/packages/raylib_arm64-osx/include/"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",
