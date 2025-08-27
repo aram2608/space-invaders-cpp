@@ -2,7 +2,7 @@
 #include <raylib.h>
 
 class Alien {
-public:
+  public:
     // Constructor - Alien - Takes int and Vector2
     Alien(int type, Vector2 position);
 
@@ -17,9 +17,10 @@ public:
     // Function to get rectangle for aliens
     Rectangle get_rect();
 
-    int type;
+    int     type;
     Vector2 position;
     // Store alien images into an array, improves loading time
     static Texture2D alien_images[3];
-private:
+
+  private:
 };

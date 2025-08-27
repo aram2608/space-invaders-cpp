@@ -1,7 +1,8 @@
+#include "game.hpp"
+
+#include <iostream>
 #include <raylib.h>
 #include <string>
-#include <iostream>
-#include "game.hpp"
 
 /* NOTES
 ~~~~~~~~~~ raylib ~~~~~~~~~~
@@ -37,7 +38,7 @@ All you need is a font file and the LoadFontEx
 
 int main() {
     // Hard coded window values w/offest
-    int off_set = 50;
+    int off_set  = 50;
     int window_w = 750;
     int window_h = 700;
 
@@ -59,26 +60,34 @@ int main() {
 
         // Handles game inputs by state
         switch (game.state) {
-            case GameState::Title: game.update_title(); break;
-            case GameState::Playing: game.update_playing(); break;
-            case GameState::Paused: game.update_paused(); break;
-            case GameState::GameOver: game.update_gameover(); break;
+        case GameState::Title:
+            game.update_title();
+            break;
+        case GameState::Playing:
+            game.update_playing();
+            break;
+        case GameState::Paused:
+            game.update_paused();
+            break;
+        case GameState::GameOver:
+            game.update_gameover();
+            break;
         }
 
         // Main logic for drawing to game window
         BeginDrawing();
 
-            // Track game state and display proper graphics
-            // I tried a switch block but it made it pretty laggy for some reason
-            if(game.state == GameState::Playing) {
-                game.draw_playing();
-            } else if (game.state == GameState::Paused) {
-                game.draw_paused();
-            } else if (game.state == GameState::Title) {
-                game.draw_title();
-            } else if (game.state == GameState::GameOver) {
-                game.draw_gameover();
-            }
+        // Track game state and display proper graphics
+        // I tried a switch block but it made it pretty laggy for some reason
+        if (game.state == GameState::Playing) {
+            game.draw_playing();
+        } else if (game.state == GameState::Paused) {
+            game.draw_paused();
+        } else if (game.state == GameState::Title) {
+            game.draw_title();
+        } else if (game.state == GameState::GameOver) {
+            game.draw_gameover();
+        }
 
         EndDrawing();
     }

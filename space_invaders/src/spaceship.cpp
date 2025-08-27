@@ -2,12 +2,12 @@
 
 // Constructor - SpaceShip
 SpaceShip::SpaceShip() {
-    image = LoadTexture("assets/spaceship.png");
+    image       = LoadTexture("assets/spaceship.png");
     laser_sound = LoadSound("audio/player_laser.ogg");
     // Calculate starting point in middle of screen
-    position.x = (GetScreenWidth() - image.width ) / 2;
+    position.x = (GetScreenWidth() - image.width) / 2;
     position.y = GetScreenHeight() - image.height - 100;
-    fire_time = 0;
+    fire_time  = 0;
 }
 
 // Deconstructor - SpaceShip
@@ -56,26 +56,21 @@ void SpaceShip::move_down() {
 // Function to handle firing of ship laser
 void SpaceShip::fire_laser() {
     // Fires a laser with a wait time of 350 ms between shot
-    if(GetTime() - fire_time >= 0.35) {
-    lasers.push_back(Laser({position.x + image.width / 2 - 2, position.y},-6));
-    fire_time = GetTime();
-    PlaySound(laser_sound);
+    if (GetTime() - fire_time >= 0.35) {
+        lasers.push_back(Laser({position.x + image.width / 2 - 2, position.y}, -6));
+        fire_time = GetTime();
+        PlaySound(laser_sound);
     }
 }
 
 // Function to get rectangle for ship
 Rectangle SpaceShip::get_rect() {
-    return {
-        position.x,
-        position.y,
-        float(image.width),
-        float(image.height)
-    };
+    return {position.x, position.y, float(image.width), float(image.height)};
 }
 
 // Function to reset spaceship
 void SpaceShip::reset() {
-    position.x = (GetScreenWidth() - image.width ) / 2;
+    position.x = (GetScreenWidth() - image.width) / 2;
     position.y = GetScreenHeight() - image.height - 100;
     lasers.clear();
 }

@@ -2,7 +2,7 @@
 #include <raylib.h>
 
 class Laser {
-public:
+  public:
     // Constructor - Laser - Takes Vector and int
     Laser(Vector2 position, int speed);
     // Function to update laser position
@@ -13,7 +13,8 @@ public:
     Rectangle get_rect();
 
     bool active;
-private:
+
+  private:
     Vector2 position;
-    int speed;
+    int     speed;
 };

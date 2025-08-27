@@ -1,27 +1,27 @@
 #pragma once
-#include "spaceship.hpp"
-#include "obstacle.hpp"
 #include "aliens.hpp"
 #include "mystery_ship.hpp"
+#include "obstacle.hpp"
+#include "spaceship.hpp"
 
 // Enum class to handle game states
 enum class GameState { Title, Playing, Paused, GameOver };
 
 class Game {
-public:
+  public:
     // Constructor - Game
     Game();
     // Deconstructor - Game
     ~Game();
 
-    // Delete copy constructor 
-    Game(const Game&) = delete;
+    // Delete copy constructor
+    Game(const Game &) = delete;
     // Delete copy assignment operator
-    Game& operator=(const Game&) = delete;
+    Game &operator=(const Game &) = delete;
     // Delete move constructor
-    Game(Game&&) = delete;
+    Game(Game &&) = delete;
     // Delete move assignment operator
-    Game& operator=(Game&&) = delete;
+    Game &operator=(Game &&) = delete;
 
     // Function to draw events onto game window
     void draw();
@@ -52,14 +52,14 @@ public:
     // Function to handle paused stated
     void update_paused();
 
-    int lives;
-    int score;
-    int high_score;
-    int level;
+    int       lives;
+    int       score;
+    int       high_score;
+    int       level;
     GameState state = GameState::Title;
-    Music music;
+    Music     music;
 
-private:
+  private:
     // Function to initialize game parameters
     void init();
     // Function to reset game after game over
@@ -94,33 +94,33 @@ private:
     // Function to reformat level displayed on UI
     std::string format_level(int number);
 
-    SpaceShip ship;
-    std::vector<Obstacle> obstacles;
-    std::vector<Alien> aliens;
-    MysteryShip mystery_ship;
-    int alien_dir;
-    std::vector<Laser> al_lasers;
+    SpaceShip              ship;
+    std::vector<Obstacle>  obstacles;
+    std::vector<Alien>     aliens;
+    MysteryShip            mystery_ship;
+    int                    alien_dir;
+    std::vector<Laser>     al_lasers;
     constexpr static float al_shot_intv = 0.35;
-    float last_al_laser_time;
-    float myst_ship_intv;
-    float lst_myst_spwn;
-    Sound explosion_sound;
-    Sound game_over_sound;
-    Sound ship_hit_sound;
-    Sound aliens_sound;
+    float                  last_al_laser_time;
+    float                  myst_ship_intv;
+    float                  lst_myst_spwn;
+    Sound                  explosion_sound;
+    Sound                  game_over_sound;
+    Sound                  ship_hit_sound;
+    Sound                  aliens_sound;
 
     // UI component measurements
-    Texture2D ship_image;
-    Font font;
-    Vector2 high_scr_title_size;
-    Vector2 title_size;
-    Vector2 game_over_title_size;
-    Vector2 retry_text_size;
-    Vector2 start_text_size;
-    Vector2 gameover_scr_size;
-    Vector2 screen_center;
-    Vector2 paused_txt;
-    Color grey;
+    Texture2D   ship_image;
+    Font        font;
+    Vector2     high_scr_title_size;
+    Vector2     title_size;
+    Vector2     game_over_title_size;
+    Vector2     retry_text_size;
+    Vector2     start_text_size;
+    Vector2     gameover_scr_size;
+    Vector2     screen_center;
+    Vector2     paused_txt;
+    Color       grey;
     std::string level_display;
-    Color yellow;
+    Color       yellow;
 };

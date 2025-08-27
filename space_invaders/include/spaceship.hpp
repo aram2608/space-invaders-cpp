@@ -1,10 +1,11 @@
 #pragma once // instruction ensures that this header file is only used once
-#include <raylib.h>
-#include <vector>
 #include "lasers.hpp"
 
+#include <raylib.h>
+#include <vector>
+
 class SpaceShip {
-public:
+  public:
     // Constructor - SpaceShip
     SpaceShip();
     // Function to draw ship to game window
@@ -28,9 +29,10 @@ public:
 
     // Deconstructor - SpaceShip
     ~SpaceShip();
-private:
+
+  private:
     Texture2D image;
-    Vector2 position;
-    double fire_time;
-    Sound laser_sound;
+    Vector2   position;
+    double    fire_time;
+    Sound     laser_sound;
 };

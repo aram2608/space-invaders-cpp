@@ -5,29 +5,27 @@ Texture2D Alien::alien_images[3] = {};
 
 // Function to unload textures after game ends, prevents mem leaks
 void Alien::unload_images() {
-    // Iterates over 
-    for(int i = 0; i < 4; i++) {
+    // Iterates over
+    for (int i = 0; i < 4; i++) {
         UnloadTexture(alien_images[i]);
     }
 }
 
 // Function to get rectangle for aliens
 Rectangle Alien::get_rect() {
-    return {
-        position.x,
-        position.y,
-        float(alien_images[type - 1].width),
-        float(alien_images[type - 1].height)
-    };
+    return {position.x,
+            position.y,
+            float(alien_images[type - 1].width),
+            float(alien_images[type - 1].height)};
 }
 
 // Constructor - Alien - Takes int and Vector2
 Alien::Alien(int type, Vector2 position) {
-    this -> type = type;
-    this -> position = position;
+    this->type     = type;
+    this->position = position;
 
     // Load all of images into disc at once to speed up loading time
-    if(alien_images[type -1].id == 0) {
+    if (alien_images[type - 1].id == 0) {
         // Match alien type to asset
         switch (type) {
         case 1:
