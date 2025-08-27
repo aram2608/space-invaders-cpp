@@ -28,6 +28,7 @@ void MysteryShip::spawn() {
     alive = true;
     PlaySound(myst_ship_sound);
 }
+
 // Function to get rectangle for mystery ship
 Rectangle MysteryShip::get_rect() {
     // Only return rectangle if mystery ship is alive/on screen
