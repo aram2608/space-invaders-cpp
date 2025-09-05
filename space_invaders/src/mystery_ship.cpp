@@ -7,7 +7,7 @@ MysteryShip::MysteryShip() {
     alive           = false;
 }
 
-// Deconstructor - MysteryShip
+// Destructor - MysteryShip
 MysteryShip::~MysteryShip() {
     UnloadTexture(image);
     UnloadSound(myst_ship_sound);

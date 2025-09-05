@@ -25,7 +25,7 @@ Game::Game() {
     init();
 }
 
-// Deconstructor - Game
+// Destructor - Game
 Game::~Game() {
     Alien::unload_images();
     UnloadMusicStream(music);

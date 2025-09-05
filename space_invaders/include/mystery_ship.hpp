@@ -5,7 +5,7 @@ class MysteryShip {
   public:
     // Constructor - MysteryShip
     MysteryShip();
-    // Deconstructor - MysteryShip
+    // Destructor - MysteryShip
     ~MysteryShip();
     // Function to update mystery ship position
     void update();

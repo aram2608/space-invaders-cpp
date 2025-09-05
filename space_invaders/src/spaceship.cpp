@@ -10,7 +10,7 @@ SpaceShip::SpaceShip() {
     fire_time  = 0;
 }
 
-// Deconstructor - SpaceShip
+// Destructor - SpaceShip
 SpaceShip::~SpaceShip() {
     UnloadTexture(image);
     UnloadSound(laser_sound);

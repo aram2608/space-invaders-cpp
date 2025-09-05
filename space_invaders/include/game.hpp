@@ -11,7 +11,7 @@ class Game {
   public:
     // Constructor - Game
     Game();
-    // Deconstructor - Game
+    // Destructor - Game
     ~Game();
 
     // Delete copy constructor
