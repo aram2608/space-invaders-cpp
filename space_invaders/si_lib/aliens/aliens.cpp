@@ -1,4 +1,4 @@
-#include "aliens.hpp"
+#include "aliens/aliens.hpp"
 
 // Store alien images into an array, improves loading time
 Texture2D Alien::alien_images[3] = {};

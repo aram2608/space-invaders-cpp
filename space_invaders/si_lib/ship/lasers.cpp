@@ -1,4 +1,4 @@
-#include "lasers.hpp"
+#include "ship/lasers.hpp"
 
 #include <iostream>
 

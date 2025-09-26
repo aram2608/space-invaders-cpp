@@ -1,4 +1,4 @@
-#include "block.hpp"
+#include "obstacles/block.hpp"
 
 // Constructor - Block - Takes Vector2
 Block::Block(Vector2 position) {

@@ -1,4 +1,4 @@
-#include "game.hpp"
+#include "../si_lib/game/game.hpp"
 
 #include <iostream>
 #include <raylib.h>
@@ -56,7 +56,7 @@ int main() {
     // Game loop. Runs will the window is not closed
     while (!WindowShouldClose()) {
         // Tunes
-        UpdateMusicStream(game.music);
+        //UpdateMusicStream(game.music);
 
         // Handles game inputs by state
         switch (game.state) {

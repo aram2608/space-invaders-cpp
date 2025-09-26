@@ -1,4 +1,4 @@
-#include "spaceship.hpp"
+#include "ship/spaceship.hpp"
 
 // Constructor - SpaceShip
 SpaceShip::SpaceShip() {

@@ -1,4 +1,4 @@
-#include "obstacle.hpp"
+#include "obstacles/obstacle.hpp"
 
 // Vector of vectors to create a grid map of our obstacles
 std::vector<std::vector<int>> Obstacle::grid = {

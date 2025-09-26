@@ -1,4 +1,4 @@
-#include "mystery_ship.hpp"
+#include "aliens/mystery_ship.hpp"
 
 // Constructor - MysteryShip
 MysteryShip::MysteryShip() {

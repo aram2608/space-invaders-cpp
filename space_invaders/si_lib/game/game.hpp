@@ -1,8 +1,8 @@
 #pragma once
-#include "aliens.hpp"
-#include "mystery_ship.hpp"
-#include "obstacle.hpp"
-#include "spaceship.hpp"
+#include "aliens/aliens.hpp"
+#include "aliens/mystery_ship.hpp"
+#include "obstacles/obstacle.hpp"
+#include "ship/spaceship.hpp"
 
 // Enum class to handle game states
 enum class GameState { Title, Playing, Paused, GameOver };

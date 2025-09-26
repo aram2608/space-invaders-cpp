@@ -1,5 +1,5 @@
-#pragma once // instruction ensures that this header file is only used once
-#include "lasers.hpp"
+#pragma once
+#include "ship/lasers.hpp"
 
 #include <raylib.h>
 #include <vector>
