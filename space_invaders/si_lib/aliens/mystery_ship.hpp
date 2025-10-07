@@ -20,7 +20,7 @@ class MysteryShip {
 
   private:
     Texture2D image;
-    Vector2   position;
-    int       speed;
-    Sound     myst_ship_sound;
+    Vector2 position;
+    int speed;
+    Sound myst_ship_sound;
 };

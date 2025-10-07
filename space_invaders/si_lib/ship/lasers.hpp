@@ -16,5 +16,5 @@ class Laser {
 
   private:
     Vector2 position;
-    int     speed;
+    int speed;
 };

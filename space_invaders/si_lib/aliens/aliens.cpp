@@ -13,15 +13,13 @@ void Alien::unload_images() {
 
 // Function to get rectangle for aliens
 Rectangle Alien::get_rect() {
-    return {position.x,
-            position.y,
-            float(alien_images[type - 1].width),
+    return {position.x, position.y, float(alien_images[type - 1].width),
             float(alien_images[type - 1].height)};
 }
 
 // Constructor - Alien - Takes int and Vector2
 Alien::Alien(int type, Vector2 position) {
-    this->type     = type;
+    this->type = type;
     this->position = position;
 
     // Load all of images into disc at once to speed up loading time
@@ -45,16 +43,10 @@ Alien::Alien(int type, Vector2 position) {
 }
 
 // Function to draw aliens to screen given a position in the vector
-void Alien::draw() {
-    DrawTexture(alien_images[type - 1], position.x, position.y, WHITE);
-}
+void Alien::draw() { DrawTexture(alien_images[type - 1], position.x, position.y, WHITE); }
 
 // Function to retrive alien type
-int Alien::get_type() {
-    return type;
-}
+int Alien::get_type() { return type; }
 
 // Function to update direction variable
-void Alien::update(int direction) {
-    position.x += direction;
-}
+void Alien::update(int direction) { position.x += direction; }

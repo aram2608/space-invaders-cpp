@@ -5,8 +5,8 @@
 // Constructor - Laser - Takes Vector and int
 Laser::Laser(Vector2 position, int speed) {
     this->position = position;
-    this->speed    = speed;
-    active         = true;
+    this->speed = speed;
+    active = true;
 }
 
 // Function to draw lasers to screen, handled with raylib

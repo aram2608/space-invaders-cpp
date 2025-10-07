@@ -23,15 +23,22 @@ class Game {
     // Delete move assignment operator
     Game &operator=(Game &&) = delete;
 
+    ///// UI FUNCTIONS //////
+    void draw_loop();
+
+    ///// GAME STATE MANAGERS /////
+    void update_loop();
+
+    int lives;
+    int score;
+    int high_score;
+    int level;
+    GameState state = GameState::Title;
+    Music music;
+
+  private:
     // Function to draw events onto game window
     void draw();
-    // Function to update the events on screen
-    void update();
-    // Function to handle IO logic for game events
-    void handle_input();
-
-    ///// UI FUNCTIONS //////
-
     // Function to draw the title screen
     void draw_title();
     // Function to draw the paused screen
@@ -40,9 +47,11 @@ class Game {
     void draw_playing();
     // Function to draw gameover screen
     void draw_gameover();
-
     ///// GAME STATE MANAGERS /////
-
+    // Function to handle IO logic for game events
+    void handle_input();
+    // Function to update the events on screen
+    void update();
     // Function to handle title game state
     void update_title();
     // Function to handle playing game state
@@ -52,14 +61,6 @@ class Game {
     // Function to handle paused stated
     void update_paused();
 
-    int       lives;
-    int       score;
-    int       high_score;
-    int       level;
-    GameState state = GameState::Title;
-    Music     music;
-
-  private:
     // Function to initialize game parameters
     void init();
     // Function to reset game after game over
@@ -94,33 +95,33 @@ class Game {
     // Function to reformat level displayed on UI
     std::string format_level(int number);
 
-    SpaceShip              ship;
-    std::vector<Obstacle>  obstacles;
-    std::vector<Alien>     aliens;
-    MysteryShip            mystery_ship;
-    int                    alien_dir;
-    std::vector<Laser>     al_lasers;
+    SpaceShip ship;
+    std::vector<Obstacle> obstacles;
+    std::vector<Alien> aliens;
+    MysteryShip mystery_ship;
+    int alien_dir;
+    std::vector<Laser> al_lasers;
     constexpr static float al_shot_intv = 0.35;
-    float                  last_al_laser_time;
-    float                  myst_ship_intv;
-    float                  lst_myst_spwn;
-    Sound                  explosion_sound;
-    Sound                  game_over_sound;
-    Sound                  ship_hit_sound;
-    Sound                  aliens_sound;
+    float last_al_laser_time;
+    float myst_ship_intv;
+    float lst_myst_spwn;
+    Sound explosion_sound;
+    Sound game_over_sound;
+    Sound ship_hit_sound;
+    Sound aliens_sound;
 
     // UI component measurements
-    Texture2D   ship_image;
-    Font        font;
-    Vector2     high_scr_title_size;
-    Vector2     title_size;
-    Vector2     game_over_title_size;
-    Vector2     retry_text_size;
-    Vector2     start_text_size;
-    Vector2     gameover_scr_size;
-    Vector2     screen_center;
-    Vector2     paused_txt;
-    Color       grey;
+    Texture2D ship_image;
+    Font font;
+    Vector2 high_scr_title_size;
+    Vector2 title_size;
+    Vector2 game_over_title_size;
+    Vector2 retry_text_size;
+    Vector2 start_text_size;
+    Vector2 gameover_scr_size;
+    Vector2 screen_center;
+    Vector2 paused_txt;
+    Color grey;
     std::string level_display;
-    Color       yellow;
+    Color yellow;
 };

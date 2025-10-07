@@ -2,12 +2,13 @@
 
 // Constructor - SpaceShip
 SpaceShip::SpaceShip() {
-    image       = LoadTexture("assets/spaceship.png");
+    image = LoadTexture("assets/spaceship.png");
     laser_sound = LoadSound("audio/player_laser.ogg");
     // Calculate starting point in middle of screen
     position.x = (GetScreenWidth() - image.width) / 2;
     position.y = GetScreenHeight() - image.height - 100;
-    fire_time  = 0;
+    fire_time = 0;
+    speed = 400;
 }
 
 // Destructor - SpaceShip
@@ -17,37 +18,35 @@ SpaceShip::~SpaceShip() {
 }
 
 // Function to draw ship to game window
-void SpaceShip::draw() {
-    DrawTexture(image, position.x, position.y, WHITE);
-}
+void SpaceShip::draw() { DrawTexture(image, position.x, position.y, WHITE); }
 
 // Function to change x_coord left
-void SpaceShip::move_left() {
-    position.x -= 7;
+void SpaceShip::move_left(float delta) {
+    position.x -= speed * delta;
     if (position.x < 25) {
         position.x = 25;
     }
 }
 
 // Function to change x_coord right
-void SpaceShip::move_right() {
-    position.x += 7;
+void SpaceShip::move_right(float delta) {
+    position.x += speed * delta;
     if (position.x > GetScreenWidth() - image.width - 25) {
         position.x = GetScreenWidth() - image.width - 25;
     }
 }
 
 // Function to change y_coord up
-void SpaceShip::move_up() {
-    position.y -= 7;
+void SpaceShip::move_up(float delta) {
+    position.y -= speed * delta;
     if (position.y < 0 + 25) {
         position.y = 0 + 25;
     }
 }
 
 // Function to change y_coord down
-void SpaceShip::move_down() {
-    position.y += 7;
+void SpaceShip::move_down(float delta) {
+    position.y += speed * delta;
     if (position.y > GetScreenHeight() - image.height - 100) {
         position.y = GetScreenHeight() - image.height - 100;
     }

@@ -1,25 +1,27 @@
 #include "game/game.hpp"
 
+#include "game.hpp"
+
 #include <fstream>
 #include <iostream>
 
 // Constructor - Game
 Game::Game() {
     // Game assets
-    music           = LoadMusicStream("audio/bgm_loud.ogg");
+    music = LoadMusicStream("audio/bgm_loud.ogg");
     explosion_sound = LoadSound("audio/explosion.ogg");
     game_over_sound = LoadSound("audio/game_over.ogg");
-    ship_hit_sound  = LoadSound("audio/ship_hit.ogg");
-    aliens_sound    = LoadSound("audio/alien_step.ogg");
+    ship_hit_sound = LoadSound("audio/ship_hit.ogg");
+    aliens_sound = LoadSound("audio/alien_step.ogg");
 
     // Textures for UI
     ship_image = LoadTexture("assets/spaceship.png");
-    font       = LoadFontEx("font/monogram.ttf", 64, 0, 0);
+    font = LoadFontEx("font/monogram.ttf", 64, 0, 0);
 
     // Hard coded values for UI
     screen_center = {GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f};
-    grey          = {29, 29, 27, 255};
-    yellow        = {243, 216, 63, 255};
+    grey = {29, 29, 27, 255};
+    yellow = {243, 216, 63, 255};
 
     // Initialize starting parameters
     init();
@@ -39,40 +41,37 @@ Game::~Game() {
 
 // Function to update the events on screen
 void Game::update() {
-    // Only active while game state is on
-    if (state == GameState::Playing) {
-        // Logic to handling spawn time of mystery ship
-        double curr_t = GetTime();
-        if (curr_t - lst_myst_spwn > myst_ship_intv) {
-            mystery_ship.spawn();
-            lst_myst_spwn  = GetTime();
-            myst_ship_intv = GetRandomValue(10, 20);
-        }
-
-        // Iterate over vector of lasers and update positions
-        for (auto &laser : ship.lasers) {
-            laser.update();
-        }
-
-        // Alien movement and logic
-        move_aliens();
-        aliens_shoot();
-
-        // Update alien laser positions
-        for (auto &laser : al_lasers) {
-            laser.update();
-        }
-
-        // Clean up lasers that fly off screen
-        delete_laser();
-        mystery_ship.update();
-
-        // Collision handling logic
-        check_collisions();
-
-        // Checks and advances level
-        check_level();
+    // Logic to handling spawn time of mystery ship
+    double curr_t = GetTime();
+    if (curr_t - lst_myst_spwn > myst_ship_intv) {
+        mystery_ship.spawn();
+        lst_myst_spwn = GetTime();
+        myst_ship_intv = GetRandomValue(10, 20);
     }
+
+    // Iterate over vector of lasers and update positions
+    for (auto &laser : ship.lasers) {
+        laser.update();
+    }
+
+    // Alien movement and logic
+    move_aliens();
+    aliens_shoot();
+
+    // Update alien laser positions
+    for (auto &laser : al_lasers) {
+        laser.update();
+    }
+
+    // Clean up lasers that fly off screen
+    delete_laser();
+    mystery_ship.update();
+
+    // Collision handling logic
+    check_collisions();
+
+    // Checks and advances level
+    check_level();
 }
 
 // Function to draw events onto game window
@@ -101,53 +100,56 @@ void Game::draw() {
     }
 }
 
+// Function to draw the game loop
+void Game::draw_loop() {
+    // Track game state and display proper graphics
+    // I tried a switch block but it made it pretty laggy for some reason
+    if (state == GameState::Playing) {
+        draw_playing();
+    } else if (state == GameState::Paused) {
+        draw_paused();
+    } else if (state == GameState::Title) {
+        draw_title();
+    } else if (state == GameState::GameOver) {
+        draw_gameover();
+    }
+}
+
 // Function to draw the title screen
 void Game::draw_title() {
     // Hard coded UI components
     high_scr_title_size = MeasureTextEx(font, "HIGH SCORE", 34, 2);
-    title_size          = MeasureTextEx(font, "SPACE INVADERS", 80, 2);
-    start_text_size     = MeasureTextEx(font, "RETURN TO START GAME", 34, 2);
+    title_size = MeasureTextEx(font, "SPACE INVADERS", 80, 2);
+    start_text_size = MeasureTextEx(font, "RETURN TO START GAME", 34, 2);
 
     // Draw UI Components
     ClearBackground(grey);
     DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, yellow);
 
     // Title screen text
-    DrawTextEx(font,
-               "SPACE INVADERS",
-               {screen_center.x - title_size.x / 2, (screen_center.y - title_size.y / 2) - 50},
-               80,
-               2,
-               yellow);
+    DrawTextEx(font, "SPACE INVADERS",
+               {screen_center.x - title_size.x / 2, (screen_center.y - title_size.y / 2) - 50}, 80,
+               2, yellow);
     DrawTextEx(
-        font,
-        "RETURN TO START GAME",
+        font, "RETURN TO START GAME",
         {screen_center.x - start_text_size.x / 2, (screen_center.y - start_text_size.y / 2) + 20},
-        34,
-        2,
-        yellow);
-    DrawTextEx(font,
-               "HIGH SCORE",
+        34, 2, yellow);
+    DrawTextEx(font, "HIGH SCORE",
                {screen_center.x - high_scr_title_size.x / 2,
                 (screen_center.y - high_scr_title_size.y / 2) + 200},
-               34,
-               2,
-               yellow);
+               34, 2, yellow);
     // Formatting for high score loaded from file
     std::string high_scr_txt = format_trail_zeros(high_score, 5);
-    Vector2     scr_txt_size = MeasureTextEx(font, high_scr_txt.c_str(), 34, 2);
-    DrawTextEx(font,
-               high_scr_txt.c_str(),
+    Vector2 scr_txt_size = MeasureTextEx(font, high_scr_txt.c_str(), 34, 2);
+    DrawTextEx(font, high_scr_txt.c_str(),
                {screen_center.x - scr_txt_size.x / 2, (screen_center.y - scr_txt_size.y / 2) + 230},
-               34,
-               2,
-               yellow);
+               34, 2, yellow);
 }
 
 // Function to draw the paused screen
 void Game::draw_paused() {
     // Hard coded UI components
-    paused_txt      = MeasureTextEx(font, "PAUSED", 80, 2);
+    paused_txt = MeasureTextEx(font, "PAUSED", 80, 2);
     start_text_size = MeasureTextEx(font, "RETURN TO START GAME", 34, 2);
 
     // Draw UI Components
@@ -155,23 +157,17 @@ void Game::draw_paused() {
     DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, yellow);
     DrawLineEx({25, 730}, {775, 730}, 3, yellow);
     std::string level_num = format_level(level);
-    std::string level_s   = level_display + " " + level_num;
+    std::string level_s = level_display + " " + level_num;
     DrawTextEx(font, level_s.c_str(), {565, 740}, 34, 2, yellow);
 
     // Paused title
-    DrawTextEx(font,
-               "PAUSED",
-               {screen_center.x - paused_txt.x / 2, (screen_center.y - paused_txt.y / 2) - 50},
-               80,
-               2,
-               yellow);
+    DrawTextEx(font, "PAUSED",
+               {screen_center.x - paused_txt.x / 2, (screen_center.y - paused_txt.y / 2) - 50}, 80,
+               2, yellow);
     DrawTextEx(
-        font,
-        "RETURN TO START GAME",
+        font, "RETURN TO START GAME",
         {screen_center.x - start_text_size.x / 2, (screen_center.y - start_text_size.y / 2) + 20},
-        34,
-        2,
-        yellow);
+        34, 2, yellow);
 
     // Lives remaining
     float x = 50.0;
@@ -194,32 +190,43 @@ void Game::draw_paused() {
 void Game::draw_gameover() {
     // Hard coded UI components
     game_over_title_size = MeasureTextEx(font, "GAME OVER", 80, 2);
-    retry_text_size      = MeasureTextEx(font, "RETURN TO TRY AGAIN", 34, 2);
+    retry_text_size = MeasureTextEx(font, "RETURN TO TRY AGAIN", 34, 2);
 
     // Draw UI Components
     ClearBackground(grey);
     DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, yellow);
 
     // Game over screen text
-    DrawTextEx(font,
-               "GAME OVER",
+    DrawTextEx(font, "GAME OVER",
                {screen_center.x - game_over_title_size.x / 2,
                 (screen_center.y - game_over_title_size.y / 2) - 50},
-               80,
-               2,
-               yellow);
+               80, 2, yellow);
     DrawTextEx(
-        font,
-        "RETURN TO TRY AGAIN",
+        font, "RETURN TO TRY AGAIN",
         {screen_center.x - retry_text_size.x / 2, (screen_center.y - retry_text_size.y / 2) + 20},
-        34,
-        2,
-        yellow);
+        34, 2, yellow);
 
     // Scoreboard
     DrawTextEx(font, "SCORE", {50, 15}, 34, 2, yellow);
     std::string score_txt = format_trail_zeros(score, 5);
     DrawTextEx(font, score_txt.c_str(), {50, 40}, 34, 2, yellow);
+}
+
+void Game::update_loop() {
+    switch (state) {
+    case GameState::Title:
+        update_title();
+        break;
+    case GameState::Playing:
+        update_playing();
+        break;
+    case GameState::Paused:
+        update_paused();
+        break;
+    case GameState::GameOver:
+        update_gameover();
+        break;
+    }
 }
 
 // Function to draw the playing screen
@@ -232,7 +239,7 @@ void Game::draw_playing() {
     DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, yellow);
     DrawLineEx({25, 730}, {775, 730}, 3, yellow);
     std::string level_num = format_level(level);
-    std::string level_s   = level_display + " " + level_num;
+    std::string level_s = level_display + " " + level_num;
     DrawTextEx(font, level_s.c_str(), {565, 740}, 34, 2, yellow);
 
     // Lives remaining
@@ -281,7 +288,7 @@ std::vector<Obstacle> Game::make_obs() {
     std::vector<Obstacle> out;
 
     // Calculate obstacle width and gaps between obstacles
-    int   obs_w   = Obstacle::grid[0].size() * 3;
+    int obs_w = Obstacle::grid[0].size() * 3;
     float obs_gap = (GetScreenWidth() - (4 * obs_w)) / 5;
 
     // Iterate over the number of obstacles we want to make (4)
@@ -323,18 +330,17 @@ std::vector<Alien> Game::create_fleet() {
 
 // Function to handle IO logic for game events
 void Game::handle_input() {
-    if (state == GameState::Playing) {
-        if (IsKeyDown(KEY_LEFT))
-            ship.move_left();
-        if (IsKeyDown(KEY_RIGHT))
-            ship.move_right();
-        if (IsKeyDown(KEY_UP))
-            ship.move_up();
-        if (IsKeyDown(KEY_DOWN))
-            ship.move_down();
-        if (IsKeyDown(KEY_SPACE))
-            ship.fire_laser();
-    }
+    float delta = GetFrameTime();
+    if (IsKeyDown(KEY_LEFT))
+        ship.move_left(delta);
+    if (IsKeyDown(KEY_RIGHT))
+        ship.move_right(delta);
+    if (IsKeyDown(KEY_UP))
+        ship.move_up(delta);
+    if (IsKeyDown(KEY_DOWN))
+        ship.move_down(delta);
+    if (IsKeyDown(KEY_SPACE))
+        ship.fire_laser();
 }
 
 // Function to shift fleet position on game window
@@ -374,8 +380,8 @@ void Game::aliens_shoot() {
     if (curr_time - last_al_laser_time >= al_shot_intv && !aliens.empty()) {
 
         // Pick a random alien and have it fire a laser
-        int    rand_idx = GetRandomValue(0, aliens.size() - 1);
-        Alien &alien    = aliens[rand_idx];
+        int rand_idx = GetRandomValue(0, aliens.size() - 1);
+        Alien &alien = aliens[rand_idx];
 
         // Vector {x_coord, y_coord} calculations with a laser speed of 6 pixels
         al_lasers.push_back(Laser({alien.position.x + alien.alien_images[alien.type - 1].width / 2,
@@ -405,7 +411,7 @@ void Game::check_collisions() {
                     score += 300;
                 }
                 score_check();
-                it           = aliens.erase(it);
+                it = aliens.erase(it);
                 laser.active = false;
             } else {
                 ++it;
@@ -416,7 +422,7 @@ void Game::check_collisions() {
             auto it = obs.blocks.begin();
             while (it != obs.blocks.end()) {
                 if (CheckCollisionRecs(it->get_rect(), laser.get_rect())) {
-                    it           = obs.blocks.erase(it);
+                    it = obs.blocks.erase(it);
                     laser.active = false;
                 } else {
                     ++it;
@@ -426,7 +432,7 @@ void Game::check_collisions() {
         // Check laser/mystery ship collisions
         if (CheckCollisionRecs(laser.get_rect(), mystery_ship.get_rect())) {
             PlaySound(explosion_sound);
-            laser.active       = false;
+            laser.active = false;
             mystery_ship.alive = false;
             score += 500;
             score_check();
@@ -438,14 +444,14 @@ void Game::check_collisions() {
         if (CheckCollisionRecs(laser.get_rect(), ship.get_rect())) {
             laser.active = false;
             PlaySound(ship_hit_sound);
-            lives--;
+            --lives;
         }
         // Iterate over obstacles vector to check for collisions
         for (auto &obs : obstacles) {
             auto it = obs.blocks.begin();
             while (it != obs.blocks.end()) {
                 if (CheckCollisionRecs(it->get_rect(), laser.get_rect())) {
-                    it           = obs.blocks.erase(it);
+                    it = obs.blocks.erase(it);
                     laser.active = false;
                 } else {
                     ++it;
@@ -469,7 +475,7 @@ void Game::check_collisions() {
         // Alien/ship collision
         if (CheckCollisionRecs(alien.get_rect(), ship.get_rect())) {
             PlaySound(ship_hit_sound);
-            lives--;
+            --lives;
             ship.reset();
         }
     }
@@ -480,7 +486,7 @@ void Game::check_collisions() {
             if (CheckCollisionRecs(it->get_rect(), ship.get_rect())) {
                 it = obs.blocks.erase(it);
                 PlaySound(ship_hit_sound);
-                lives--;
+                --lives;
                 ship.reset();
             } else {
                 it++;
@@ -494,17 +500,17 @@ void Game::init() {
     // Starting game state
     state = GameState::Title;
     // Player params
-    lives      = 3;
-    score      = 0;
+    lives = 3;
+    score = 0;
     high_score = load_score_file();
     // Assets/aliens
     obstacles = make_obs();
-    aliens    = check_level();
+    aliens = check_level();
     alien_dir = 1;
     // Mystery Ship params
     last_al_laser_time = 0.0;
-    lst_myst_spwn      = 0.0;
-    myst_ship_intv     = GetRandomValue(10, 20);
+    lst_myst_spwn = 0.0;
+    myst_ship_intv = GetRandomValue(10, 20);
 }
 
 // Function to reset game after game over
@@ -537,7 +543,7 @@ void Game::save_high_scr(int high_scr) {
 
 // Function to load a high score at start of game from text file
 int Game::load_score_file() {
-    int           loaded_high_scr = 0;
+    int loaded_high_scr = 0;
     std::ifstream high_scr_file("score/highscore.txt");
     if (high_scr_file.is_open()) {
         high_scr_file >> loaded_high_scr;
@@ -606,16 +612,16 @@ void Game::update_paused() {
 
 // Function to format the scores
 std::string Game::format_trail_zeros(int number, int width) {
-    std::string num_text       = std::to_string(number);
-    int         trailing_zeros = width - num_text.length();
-    return num_text            = std::string(trailing_zeros, '0') + num_text;
+    std::string num_text = std::to_string(number);
+    int trailing_zeros = width - num_text.length();
+    return num_text = std::string(trailing_zeros, '0') + num_text;
 }
 
 // Function to reformat level displayed on UI
 std::string Game::format_level(int number) {
     if (number < 10) {
         std::string num_text = std::to_string(number);
-        return num_text      = '0' + num_text;
+        return num_text = '0' + num_text;
     } else {
         std::string num_text = std::to_string(number);
         return num_text;
