@@ -6,8 +6,8 @@ Texture2D Alien::alien_images[3] = {};
 // Function to unload textures after game ends, prevents mem leaks
 void Alien::unload_images() {
     // Iterates over
-    for (int i = 0; i < 4; i++) {
-        UnloadTexture(alien_images[i]);
+    for (int it = 0; it < 4; it++) {
+        UnloadTexture(alien_images[it]);
     }
 }
 

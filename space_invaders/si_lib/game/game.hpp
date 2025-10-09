@@ -61,6 +61,8 @@ class Game {
     // Function to handle paused stated
     void update_paused();
 
+    void title();
+
     // Function to initialize game parameters
     void init();
     // Function to reset game after game over
@@ -72,7 +74,7 @@ class Game {
     // Function to load a high score at start of game from text file
     int load_score_file();
     // Function to check the current level
-    std::vector<Alien> check_level();
+    void check_level();
     // Function to handle collisions
     void check_collisions();
 

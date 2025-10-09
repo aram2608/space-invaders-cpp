@@ -56,7 +56,7 @@ int main() {
     // Game loop. Runs will the window is not closed
     while (!WindowShouldClose()) {
         // Tunes
-        // UpdateMusicStream(game.music);
+        UpdateMusicStream(game.music);
 
         // Handles game inputs by state
         game.update_loop();

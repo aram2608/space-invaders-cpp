@@ -1,7 +1,5 @@
 #include "game/game.hpp"
 
-#include "game.hpp"
-
 #include <fstream>
 #include <iostream>
 
@@ -24,7 +22,7 @@ Game::Game() {
     yellow = {243, 216, 63, 255};
 
     // Initialize starting parameters
-    init();
+    title();
 }
 
 // Destructor - Game
@@ -39,8 +37,58 @@ Game::~Game() {
     UnloadFont(font);
 }
 
+// Function to initalize the title screen
+void Game::title() {
+    // Starting game state
+    state = GameState::Title;
+    high_score = load_score_file();
+}
+
+// Function to initialize game parameters
+void Game::init() {
+    // Player params
+    lives = 3;
+    score = 0;
+    level = 1;
+    // Assets/aliens
+    obstacles = make_obs();
+    aliens = create_fleet();
+    alien_dir = 1;
+    // Mystery Ship params
+    last_al_laser_time = 0.0;
+    lst_myst_spwn = 0.0;
+    myst_ship_intv = GetRandomValue(10, 20);
+}
+
+// Function to reset game after game over
+void Game::reset() {
+    // We rest the ships position
+    ship.reset();
+    // We clear the vectors for all game objects
+    aliens.clear();
+    al_lasers.clear();
+    obstacles.clear();
+}
+
+// Function to handle IO logic for game events
+void Game::handle_input() {
+    float delta = GetFrameTime();
+    if (IsKeyDown(KEY_LEFT))
+        ship.move_left(delta);
+    if (IsKeyDown(KEY_RIGHT))
+        ship.move_right(delta);
+    if (IsKeyDown(KEY_UP))
+        ship.move_up(delta);
+    if (IsKeyDown(KEY_DOWN))
+        ship.move_down(delta);
+    if (IsKeyDown(KEY_SPACE))
+        ship.fire_laser();
+}
+
 // Function to update the events on screen
 void Game::update() {
+    // We handle keyboard inputs
+    handle_input();
     // Logic to handling spawn time of mystery ship
     double curr_t = GetTime();
     if (curr_t - lst_myst_spwn > myst_ship_intv) {
@@ -72,6 +120,70 @@ void Game::update() {
 
     // Checks and advances level
     check_level();
+}
+
+// Function to update screen given game state
+void Game::update_loop() {
+    switch (state) {
+    case GameState::Title:
+        update_title();
+        break;
+    case GameState::Playing:
+        update_playing();
+        break;
+    case GameState::Paused:
+        update_paused();
+        break;
+    case GameState::GameOver:
+        update_gameover();
+        break;
+    }
+}
+
+// Function to handle title game state
+void Game::update_title() {
+    if (IsKeyPressed(KEY_ENTER)) {
+        PlayMusicStream(music);
+        init();
+        state = GameState::Playing;
+    }
+}
+
+// Function to handle playing game state
+void Game::update_playing() {
+    if (IsKeyPressed(KEY_P)) {
+        PauseMusicStream(music);
+        state = GameState::Paused;
+    } else {
+        update();
+        if (lives <= 0) {
+            PauseMusicStream(music);
+            state = GameState::GameOver;
+            PlaySound(game_over_sound);
+        }
+    }
+}
+
+// Function to handle playing game state
+void Game::update_gameover() {
+    if (IsKeyPressed(KEY_ENTER)) {
+        PlayMusicStream(music);
+        reset();
+        init();
+        state = GameState::Playing;
+    }
+    if (IsKeyPressed(KEY_T)) {
+        reset();
+        state = GameState::Title;
+    }
+}
+
+// Function to handle paused stated
+void Game::update_paused() {
+    if (IsKeyPressed(KEY_ENTER)) {
+        PlayMusicStream(music);
+        state = GameState::Playing;
+    }
 }
 
 // Function to draw events onto game window
@@ -212,23 +324,6 @@ void Game::draw_gameover() {
     DrawTextEx(font, score_txt.c_str(), {50, 40}, 34, 2, yellow);
 }
 
-void Game::update_loop() {
-    switch (state) {
-    case GameState::Title:
-        update_title();
-        break;
-    case GameState::Playing:
-        update_playing();
-        break;
-    case GameState::Paused:
-        update_paused();
-        break;
-    case GameState::GameOver:
-        update_gameover();
-        break;
-    }
-}
-
 // Function to draw the playing screen
 void Game::draw_playing() {
     // Hard coded UI components
@@ -326,21 +421,6 @@ std::vector<Alien> Game::create_fleet() {
         }
     }
     return out;
-}
-
-// Function to handle IO logic for game events
-void Game::handle_input() {
-    float delta = GetFrameTime();
-    if (IsKeyDown(KEY_LEFT))
-        ship.move_left(delta);
-    if (IsKeyDown(KEY_RIGHT))
-        ship.move_right(delta);
-    if (IsKeyDown(KEY_UP))
-        ship.move_up(delta);
-    if (IsKeyDown(KEY_DOWN))
-        ship.move_down(delta);
-    if (IsKeyDown(KEY_SPACE))
-        ship.fire_laser();
 }
 
 // Function to shift fleet position on game window
@@ -495,33 +575,6 @@ void Game::check_collisions() {
     }
 }
 
-// Function to initialize game parameters
-void Game::init() {
-    // Starting game state
-    state = GameState::Title;
-    // Player params
-    lives = 3;
-    score = 0;
-    high_score = load_score_file();
-    // Assets/aliens
-    obstacles = make_obs();
-    aliens = check_level();
-    alien_dir = 1;
-    // Mystery Ship params
-    last_al_laser_time = 0.0;
-    lst_myst_spwn = 0.0;
-    myst_ship_intv = GetRandomValue(10, 20);
-}
-
-// Function to reset game after game over
-void Game::reset() {
-    ship.reset();
-    aliens.clear();
-    al_lasers.clear();
-    obstacles.clear();
-    level = 0;
-}
-
 // Function to update high score
 void Game::score_check() {
     if (score > high_score) {
@@ -554,59 +607,12 @@ int Game::load_score_file() {
 }
 
 // Function to progress to new level
-// Starts by assinging level to 1
-std::vector<Alien> Game::check_level() {
+// check in the update function
+void Game::check_level() {
+    // We check if the vector is empty
     if (aliens.empty()) {
-        level++;
+        ++level;
         aliens = create_fleet();
-    }
-    return aliens;
-}
-
-// Function to handle title game state
-void Game::update_title() {
-    if (IsKeyPressed(KEY_ENTER)) {
-        PlayMusicStream(music);
-        init();
-        state = GameState::Playing;
-    }
-}
-
-// Function to handle playing game state
-void Game::update_playing() {
-    if (IsKeyPressed(KEY_P)) {
-        PauseMusicStream(music);
-        state = GameState::Paused;
-    } else {
-        handle_input();
-        update();
-        if (lives <= 0) {
-            PauseMusicStream(music);
-            state = GameState::GameOver;
-            PlaySound(game_over_sound);
-        }
-    }
-}
-
-// Function to handle playing game state
-void Game::update_gameover() {
-    if (IsKeyPressed(KEY_ENTER)) {
-        PlayMusicStream(music);
-        reset();
-        init();
-        state = GameState::Playing;
-    }
-    if (IsKeyPressed(KEY_T)) {
-        reset();
-        state = GameState::Title;
-    }
-}
-
-// Function to handle paused stated
-void Game::update_paused() {
-    if (IsKeyPressed(KEY_ENTER)) {
-        PlayMusicStream(music);
-        state = GameState::Playing;
     }
 }
 
