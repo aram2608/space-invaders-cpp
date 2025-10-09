@@ -40,9 +40,9 @@ Rectangle MysteryShip::get_rect() {
 }
 
 // Function to update mystery ship position
-void MysteryShip::update() {
+void MysteryShip::update(float& delta) {
     if (alive) {
-        position.x += speed;
+        position.x += speed * 100.0f * delta;
         if (position.x > GetScreenWidth() - image.width - 25 || position.x < 25) {
             alive = false;
         }

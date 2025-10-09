@@ -25,8 +25,8 @@ Rectangle Laser::get_rect() {
 }
 
 // Function to update laser position
-void Laser::update() {
-    position.y += speed;
+void Laser::update(float &delta) {
+    position.y += speed * delta;
     // Inactivates lasers given y_coords, catches both ship and alien lasers
     if (active) {
         if (position.y > GetScreenHeight() - 100 || position.y < 25) {

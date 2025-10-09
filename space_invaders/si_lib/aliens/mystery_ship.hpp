@@ -8,7 +8,7 @@ class MysteryShip {
     // Destructor - MysteryShip
     ~MysteryShip();
     // Function to update mystery ship position
-    void update();
+    void update(float& delta);
     // Function to draw mystery ship to screen
     void draw();
     // Function to handle firing of ship laser

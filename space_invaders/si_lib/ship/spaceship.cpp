@@ -36,27 +36,13 @@ void SpaceShip::move_right(float delta) {
     }
 }
 
-// Function to change y_coord up
-void SpaceShip::move_up(float delta) {
-    position.y -= speed * delta;
-    if (position.y < 0 + 25) {
-        position.y = 0 + 25;
-    }
-}
-
-// Function to change y_coord down
-void SpaceShip::move_down(float delta) {
-    position.y += speed * delta;
-    if (position.y > GetScreenHeight() - image.height - 100) {
-        position.y = GetScreenHeight() - image.height - 100;
-    }
-}
-
 // Function to handle firing of ship laser
 void SpaceShip::fire_laser() {
     // Fires a laser with a wait time of 350 ms between shot
     if (GetTime() - fire_time >= 0.35) {
-        lasers.push_back(Laser({position.x + image.width / 2 - 2, position.y}, -6));
+        // We create the laser in place and stuff it into the vector
+        lasers.emplace_back(Vector2{position.x + image.width / 2 - 2, position.y}, -300);
+        // We then reset the fire time
         fire_time = GetTime();
         PlaySound(laser_sound);
     }

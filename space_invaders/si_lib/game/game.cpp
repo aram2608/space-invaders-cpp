@@ -4,7 +4,7 @@
 #include <iostream>
 
 // Constructor - Game
-Game::Game() {
+Game::Game() : keys{KEY_LEFT, KEY_RIGHT, KEY_SPACE} {
     // Game assets
     music = LoadMusicStream("audio/bgm_loud.ogg");
     explosion_sound = LoadSound("audio/explosion.ogg");
@@ -21,8 +21,9 @@ Game::Game() {
     grey = {29, 29, 27, 255};
     yellow = {243, 216, 63, 255};
 
-    // Initialize starting parameters
+    // Initialize starting screen/keybinds
     title();
+    bind();
 }
 
 // Destructor - Game
@@ -42,6 +43,14 @@ void Game::title() {
     // Starting game state
     state = GameState::Title;
     high_score = load_score_file();
+}
+
+// Method to bind our keys to the keymap
+void Game::bind() {
+    // We bind a lambda function that take a referecne to our ship and the delta time
+    keymap[KEY_LEFT] = [](SpaceShip &ship, float &delta) { ship.move_left(delta); };
+    keymap[KEY_RIGHT] = [](SpaceShip &ship, float &delta) { ship.move_right(delta); };
+    keymap[KEY_SPACE] = [](SpaceShip &ship, float &delta) { ship.fire_laser(); };
 }
 
 // Function to initialize game parameters
@@ -71,49 +80,55 @@ void Game::reset() {
 }
 
 // Function to handle IO logic for game events
-void Game::handle_input() {
-    float delta = GetFrameTime();
-    if (IsKeyDown(KEY_LEFT))
-        ship.move_left(delta);
-    if (IsKeyDown(KEY_RIGHT))
-        ship.move_right(delta);
-    if (IsKeyDown(KEY_UP))
-        ship.move_up(delta);
-    if (IsKeyDown(KEY_DOWN))
-        ship.move_down(delta);
-    if (IsKeyDown(KEY_SPACE))
-        ship.fire_laser();
+void Game::handle_input(float &delta) {
+    // We loop over the vector of keys
+    for (auto key : keys) {
+        // If one is press we dispatch the bound function
+        if (IsKeyDown(key)) {
+            dispatch(key, delta);
+        }
+    }
+}
+
+// Function to dispatch the bound methods
+void Game::dispatch(int &key, float &delta) {
+    // We use the find method to return a map iterator
+    auto elem = keymap.find(key);
+    // We test if the object is in the map
+    // This is sorta redundant but safety is nice
+    if (elem != keymap.end()) {
+        // We then invoke the method and dereference the Editor instance
+        elem->second(ship, delta);
+    }
 }
 
 // Function to update the events on screen
 void Game::update() {
+    // We get the delta time
+    float delta = GetFrameTime();
     // We handle keyboard inputs
-    handle_input();
-    // Logic to handling spawn time of mystery ship
-    double curr_t = GetTime();
-    if (curr_t - lst_myst_spwn > myst_ship_intv) {
-        mystery_ship.spawn();
-        lst_myst_spwn = GetTime();
-        myst_ship_intv = GetRandomValue(10, 20);
-    }
+    handle_input(delta);
+
+    // We spawn the mystery ship
+    spawn_mystery_ship();
 
     // Iterate over vector of lasers and update positions
     for (auto &laser : ship.lasers) {
-        laser.update();
+        laser.update(delta);
     }
 
     // Alien movement and logic
-    move_aliens();
+    move_aliens(delta);
     aliens_shoot();
 
     // Update alien laser positions
     for (auto &laser : al_lasers) {
-        laser.update();
+        laser.update(delta);
     }
 
     // Clean up lasers that fly off screen
     delete_laser();
-    mystery_ship.update();
+    mystery_ship.update(delta);
 
     // Collision handling logic
     check_collisions();
@@ -396,6 +411,17 @@ std::vector<Obstacle> Game::make_obs() {
     return out;
 }
 
+// Function to handle mystery ship spawning logic
+void Game::spawn_mystery_ship() {
+    // Logic to handling spawn time of mystery ship
+    double curr_t = GetTime();
+    if (curr_t - lst_myst_spwn > myst_ship_intv) {
+        mystery_ship.spawn();
+        lst_myst_spwn = GetTime();
+        myst_ship_intv = GetRandomValue(10, 20);
+    }
+}
+
 // Function to create a vector of aliens to spawn a fleet into game window
 std::vector<Alien> Game::create_fleet() {
     std::vector<Alien> out;
@@ -424,19 +450,19 @@ std::vector<Alien> Game::create_fleet() {
 }
 
 // Function to shift fleet position on game window
-void Game::move_aliens() {
+void Game::move_aliens(float &delta) {
     // Calculate screen position to make sure the aliens stay on screen
     // Move aliens down once the edge of screen is met
     for (auto &alien : aliens) {
         // Right side of screen
         if (alien.position.x + alien.alien_images[alien.type - 1].width > GetScreenWidth() - 25) {
-            alien_dir = -1;
+            alien_dir = -1 * 100.0f * delta;
             aliens_down(4);
             PlaySound(aliens_sound);
         }
         // Left side of screen
         if (alien.position.x < 25) {
-            alien_dir = 1;
+            alien_dir = 1 * 100.0f * delta;
             aliens_down(4);
             PlaySound(aliens_sound);
         }
@@ -463,10 +489,11 @@ void Game::aliens_shoot() {
         int rand_idx = GetRandomValue(0, aliens.size() - 1);
         Alien &alien = aliens[rand_idx];
 
-        // Vector {x_coord, y_coord} calculations with a laser speed of 6 pixels
-        al_lasers.push_back(Laser({alien.position.x + alien.alien_images[alien.type - 1].width / 2,
-                                   alien.position.y + alien.alien_images[alien.type - 1].height},
-                                  6));
+        // Vector {x_coord, y_coord} calculations with a laser speed of 300.0f
+        al_lasers.emplace_back(
+            Vector2{alien.position.x + alien.alien_images[alien.type - 1].width / 2,
+                    alien.position.y + alien.alien_images[alien.type - 1].height},
+            300.0f);
 
         // Update last fire time given completion of previous code
         last_al_laser_time = GetTime();

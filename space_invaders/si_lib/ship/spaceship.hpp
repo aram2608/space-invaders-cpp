@@ -14,10 +14,6 @@ class SpaceShip {
     void move_left(float delta);
     // Function to change x_coord right
     void move_right(float delta);
-    // Function to change y_coord up
-    void move_up(float delta);
-    // Function to change y_coord down
-    void move_down(float delta);
     // Function to handle firing of ship laser
     void fire_laser();
     // Function to get rectangle for ship

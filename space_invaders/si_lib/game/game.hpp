@@ -4,8 +4,14 @@
 #include "obstacles/obstacle.hpp"
 #include "ship/spaceship.hpp"
 
+#include <functional>
+#include <unordered_map>
+#include <vector>
+
 // Enum class to handle game states
 enum class GameState { Title, Playing, Paused, GameOver };
+
+using Action = std::function<void(SpaceShip &, float &)>;
 
 class Game {
   public:
@@ -49,7 +55,9 @@ class Game {
     void draw_gameover();
     ///// GAME STATE MANAGERS /////
     // Function to handle IO logic for game events
-    void handle_input();
+    void handle_input(float &delta);
+    void dispatch(int &key, float &delta);
+    void bind();
     // Function to update the events on screen
     void update();
     // Function to handle title game state
@@ -60,6 +68,8 @@ class Game {
     void update_gameover();
     // Function to handle paused stated
     void update_paused();
+
+    void spawn_mystery_ship();
 
     void title();
 
@@ -86,7 +96,7 @@ class Game {
     // Function to create a vector of aliens to spawn a fleet into game window
     std::vector<Alien> create_fleet();
     // Function to shift fleet position on game window
-    void move_aliens();
+    void move_aliens(float &delta);
     // Function to move entire fleet of aliens down the y direction
     void aliens_down(int distance);
     // Function handle firing logic for alien fleet
@@ -97,6 +107,8 @@ class Game {
     // Function to reformat level displayed on UI
     std::string format_level(int number);
 
+    const std::vector<int> keys;
+    std::unordered_map<int, Action> keymap;
     SpaceShip ship;
     std::vector<Obstacle> obstacles;
     std::vector<Alien> aliens;
