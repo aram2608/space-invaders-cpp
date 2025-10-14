@@ -4,16 +4,28 @@
 #include "obstacles/obstacle.hpp"
 #include "ship/spaceship.hpp"
 
-#include <functional>
+#include <array>
 #include <unordered_map>
 #include <vector>
 
 // Enum class to handle game states
-enum class GameState { Title, Playing, Paused, GameOver };
+enum class GameState { Title, Playing, Paused, GameOver, Count };
 
-using Action = std::function<void(SpaceShip &, float &)>;
+// Since we are storing lambdas with no capture, we don't have to use
+// std::function<void(SpaceSHip&, float)>
+// std::function allows capturing flexability later on but we dont really need it
+using Action = void (*)(SpaceShip &, float);
 
 class Game {
+    using State = void (*)(Game &);
+    // We make a little data container to stuff our functions into
+    struct StateTable {
+        State enter;
+        State update;
+    };
+    // We then make an array to stuff the data containers
+    std::array<StateTable, static_cast<size_t>(GameState::Count)> states;
+
   public:
     // Constructor - Game
     Game();
@@ -55,11 +67,13 @@ class Game {
     void draw_gameover();
     ///// GAME STATE MANAGERS /////
     // Function to handle IO logic for game events
-    void handle_input(float &delta);
-    void dispatch(int &key, float &delta);
-    void bind();
+    void handle_input(float delta);
+    void dispatch(int key, float delta);
+    void bind_inputs();
+    void bind_states();
     // Function to update the events on screen
-    void update();
+    void update_simulation();
+    void set_state(GameState next);
     // Function to handle title game state
     void update_title();
     // Function to handle playing game state
@@ -96,7 +110,7 @@ class Game {
     // Function to create a vector of aliens to spawn a fleet into game window
     std::vector<Alien> create_fleet();
     // Function to shift fleet position on game window
-    void move_aliens(float &delta);
+    void move_aliens(float delta);
     // Function to move entire fleet of aliens down the y direction
     void aliens_down(int distance);
     // Function handle firing logic for alien fleet
@@ -107,7 +121,7 @@ class Game {
     // Function to reformat level displayed on UI
     std::string format_level(int number);
 
-    const std::vector<int> keys;
+    const std::array<int, 3> keys;
     std::unordered_map<int, Action> keymap;
     SpaceShip ship;
     std::vector<Obstacle> obstacles;

@@ -1,5 +1,7 @@
 #include "game/game.hpp"
 
+#include "game.hpp"
+
 #include <fstream>
 #include <iostream>
 
@@ -23,7 +25,8 @@ Game::Game() : keys{KEY_LEFT, KEY_RIGHT, KEY_SPACE} {
 
     // Initialize starting screen/keybinds
     title();
-    bind();
+    bind_inputs();
+    bind_states();
 }
 
 // Destructor - Game
@@ -46,11 +49,11 @@ void Game::title() {
 }
 
 // Method to bind our keys to the keymap
-void Game::bind() {
+void Game::bind_inputs() {
     // We bind a lambda function that take a referecne to our ship and the delta time
-    keymap[KEY_LEFT] = [](SpaceShip &ship, float &delta) { ship.move_left(delta); };
-    keymap[KEY_RIGHT] = [](SpaceShip &ship, float &delta) { ship.move_right(delta); };
-    keymap[KEY_SPACE] = [](SpaceShip &ship, float &delta) { ship.fire_laser(); };
+    keymap[KEY_LEFT] = [](SpaceShip &ship, float delta) { ship.move_left(delta); };
+    keymap[KEY_RIGHT] = [](SpaceShip &ship, float delta) { ship.move_right(delta); };
+    keymap[KEY_SPACE] = [](SpaceShip &ship, float delta) { ship.fire_laser(); };
 }
 
 // Function to initialize game parameters
@@ -80,7 +83,7 @@ void Game::reset() {
 }
 
 // Function to handle IO logic for game events
-void Game::handle_input(float &delta) {
+void Game::handle_input(float delta) {
     // We loop over the vector of keys
     for (auto key : keys) {
         // If one is press we dispatch the bound function
@@ -91,19 +94,15 @@ void Game::handle_input(float &delta) {
 }
 
 // Function to dispatch the bound methods
-void Game::dispatch(int &key, float &delta) {
-    // We use the find method to return a map iterator
-    auto elem = keymap.find(key);
-    // We test if the object is in the map
-    // This is sorta redundant but safety is nice
-    if (elem != keymap.end()) {
-        // We then invoke the method and dereference the Editor instance
-        elem->second(ship, delta);
-    }
+void Game::dispatch(int key, float delta) {
+    // We do a quick check to see if the method is bound to the keymap
+    // as an assurance
+    if (auto it = keymap.find(key); it != keymap.end())
+        it->second(ship, delta);
 }
 
 // Function to update the events on screen
-void Game::update() {
+void Game::update_simulation() {
     // We get the delta time
     float delta = GetFrameTime();
     // We handle keyboard inputs
@@ -137,69 +136,80 @@ void Game::update() {
     check_level();
 }
 
-// Function to update screen given game state
-void Game::update_loop() {
-    switch (state) {
-    case GameState::Title:
-        update_title();
-        break;
-    case GameState::Playing:
-        update_playing();
-        break;
-    case GameState::Paused:
-        update_paused();
-        break;
-    case GameState::GameOver:
-        update_gameover();
-        break;
-    }
+// Method to bind the state tables at the start of the game
+void Game::bind_states() {
+    // We need to initialize all the state containers at once
+    // Each lambda stores the underlying logic needed to run each state
+    states = {{ // Title
+               {/* enter */
+                [](Game &game) { /* nothing */ },
+                /* update */
+                [](Game &game) {
+                    if (IsKeyPressed(KEY_ENTER)) {
+                        game.reset();
+                        game.init();
+                        game.set_state(GameState::Playing);
+                    }
+                }},
+
+               // Playing
+               {/* enter */
+                [](Game &game) { PlayMusicStream(game.music); },
+                /* update */
+                [](Game &game) {
+                    if (IsKeyPressed(KEY_P)) {
+                        game.set_state(GameState::Paused);
+                        return;
+                    }
+                    game.update_simulation();
+                    if (game.lives <= 0)
+                        game.set_state(GameState::GameOver);
+                }},
+
+               // Pause
+               {/* enter */
+                [](Game &game) { PauseMusicStream(game.music); },
+                /* update */
+                [](Game &game) {
+                    if (IsKeyPressed(KEY_ENTER))
+                        game.set_state(GameState::Playing);
+                }},
+
+               // Game over
+               {/* enter */
+                [](Game &game) {
+                    PauseMusicStream(game.music);
+                    PlaySound(game.game_over_sound);
+                },
+                /* update */
+                [](Game &game) {
+                    if (IsKeyPressed(KEY_ENTER)) {
+                        game.reset();
+                        game.init();
+                        game.set_state(GameState::Playing);
+                    } else if (IsKeyPressed(KEY_T)) {
+                        game.reset();
+                        game.set_state(GameState::Title);
+                    }
+                }}}};
 }
 
-// Function to handle title game state
-void Game::update_title() {
-    if (IsKeyPressed(KEY_ENTER)) {
-        PlayMusicStream(music);
-        init();
-        state = GameState::Playing;
+// Method to set the set during run time
+void Game::set_state(GameState next) {
+    // If the current state matches what we want to move to we simply return
+    // this is a littler sanity check but a bit redundant
+    if (state == next) {
+        return;
     }
+    // We switch states
+    state = next;
+    // Now we can index the states array and pass a reference to the current
+    // game class to run all the underlying logic used to enter a new state
+    states[static_cast<size_t>(state)].enter(*this);
 }
 
-// Function to handle playing game state
-void Game::update_playing() {
-    if (IsKeyPressed(KEY_P)) {
-        PauseMusicStream(music);
-        state = GameState::Paused;
-    } else {
-        update();
-        if (lives <= 0) {
-            PauseMusicStream(music);
-            state = GameState::GameOver;
-            PlaySound(game_over_sound);
-        }
-    }
-}
-
-// Function to handle playing game state
-void Game::update_gameover() {
-    if (IsKeyPressed(KEY_ENTER)) {
-        PlayMusicStream(music);
-        reset();
-        init();
-        state = GameState::Playing;
-    }
-    if (IsKeyPressed(KEY_T)) {
-        reset();
-        state = GameState::Title;
-    }
-}
-
-// Function to handle paused stated
-void Game::update_paused() {
-    if (IsKeyPressed(KEY_ENTER)) {
-        PlayMusicStream(music);
-        state = GameState::Playing;
-    }
-}
+// Method to update the loop given the current state
+void Game::update_loop() { states[static_cast<size_t>(state)].update(*this); }
 
 // Function to draw events onto game window
 void Game::draw() {
@@ -227,19 +237,24 @@ void Game::draw() {
     }
 }
 
-// Function to draw the game loop
+// Main logic to draw to screen
 void Game::draw_loop() {
-    // Track game state and display proper graphics
-    // I tried a switch block but it made it pretty laggy for some reason
-    if (state == GameState::Playing) {
-        draw_playing();
-    } else if (state == GameState::Paused) {
-        draw_paused();
-    } else if (state == GameState::Title) {
-        draw_title();
-    } else if (state == GameState::GameOver) {
-        draw_gameover();
-    }
+    // I switched to a dispatch table since its much cleaner than a giant if/else
+
+    // We first typdef or declare an alias for a pointer to a non static member
+    // function in the game class that takes no parameters and returns a void
+    // Seems a bit like magic and i dont fully understand it but it works pretty
+    // well
+    using DrawFn = void (Game::*)();
+
+    // We then create an array of pointers to the methods we want to dispatch
+    static constexpr DrawFn table[] = {&Game::draw_title,     // Title
+                                       &Game::draw_playing,   // Playing
+                                       &Game::draw_paused,    // Paused
+                                       &Game::draw_gameover}; // Gameover
+    // We can now cast the current state to its size in order to index our table
+    // we then point at the index and dereference the function so we can call it
+    (this->*table[static_cast<std::size_t>(state)])();
 }
 
 // Function to draw the title screen
@@ -450,7 +465,7 @@ std::vector<Alien> Game::create_fleet() {
 }
 
 // Function to shift fleet position on game window
-void Game::move_aliens(float &delta) {
+void Game::move_aliens(float delta) {
     // Calculate screen position to make sure the aliens stay on screen
     // Move aliens down once the edge of screen is met
     for (auto &alien : aliens) {
