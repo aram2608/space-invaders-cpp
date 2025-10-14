@@ -140,58 +140,56 @@ void Game::update_simulation() {
 void Game::bind_states() {
     // We need to initialize all the state containers at once
     // Each lambda stores the underlying logic needed to run each state
-    states = {{ // Title
-               {/* enter */
-                [](Game &game) { /* nothing */ },
-                /* update */
-                [](Game &game) {
-                    if (IsKeyPressed(KEY_ENTER)) {
-                        game.reset();
-                        game.init();
-                        game.set_state(GameState::Playing);
-                    }
-                }},
-
-               // Playing
-               {/* enter */
-                [](Game &game) { PlayMusicStream(game.music); },
-                /* update */
-                [](Game &game) {
-                    if (IsKeyPressed(KEY_P)) {
-                        game.set_state(GameState::Paused);
-                        return;
-                    }
-                    game.update_simulation();
-                    if (game.lives <= 0)
-                        game.set_state(GameState::GameOver);
-                }},
-
-               // Pause
-               {/* enter */
-                [](Game &game) { PauseMusicStream(game.music); },
-                /* update */
-                [](Game &game) {
-                    if (IsKeyPressed(KEY_ENTER))
-                        game.set_state(GameState::Playing);
-                }},
-
-               // Game over
-               {/* enter */
-                [](Game &game) {
-                    PauseMusicStream(game.music);
-                    PlaySound(game.game_over_sound);
-                },
-                /* update */
-                [](Game &game) {
-                    if (IsKeyPressed(KEY_ENTER)) {
-                        game.reset();
-                        game.init();
-                        game.set_state(GameState::Playing);
-                    } else if (IsKeyPressed(KEY_T)) {
-                        game.reset();
-                        game.set_state(GameState::Title);
-                    }
-                }}}};
+    // We are not list initializing inside the array itself
+    // since that was incredibly unreadable
+    StateTable TITLE = {
+        .enter = {[](Game &game) { /* nothing */ }},
+        .update = {[](Game &game) {
+            if (IsKeyPressed(KEY_ENTER)) {
+                game.reset();
+                game.init();
+                game.set_state(GameState::Playing);
+            }
+        }},
+    };
+    StateTable PLAYING = {
+        .enter = {[](Game &game) { PlayMusicStream(game.music); }},
+        .update = {[](Game &game) {
+            if (IsKeyPressed(KEY_P)) {
+                game.set_state(GameState::Paused);
+                return;
+            }
+            game.update_simulation();
+            if (game.lives <= 0) {
+                game.set_state(GameState::GameOver);
+            }
+        }},
+    };
+    StateTable PAUSE = {
+        .enter = {[](Game &game) { PauseMusicStream(game.music); }},
+        .update = {[](Game &game) {
+            if (IsKeyPressed(KEY_ENTER)) {
+                game.set_state(GameState::Playing);
+            }
+        }},
+    };
+    StateTable GAMEOVER = {
+        .enter = {[](Game &game) {
+            PauseMusicStream(game.music);
+            PlaySound(game.game_over_sound);
+        }},
+        .update = {[](Game &game) {
+            if (IsKeyPressed(KEY_ENTER)) {
+                game.reset();
+                game.init();
+                game.set_state(GameState::Playing);
+            } else if (IsKeyPressed(KEY_T)) {
+                game.reset();
+                game.set_state(GameState::Title);
+            }
+        }},
+    };
+    STATES = {TITLE, PLAYING, PAUSE, GAMEOVER};
 }
 
 // Method to set the set during run time
@@ -205,11 +203,11 @@ void Game::set_state(GameState next) {
     state = next;
     // Now we can index the states array and pass a reference to the current
     // game class to run all the underlying logic used to enter a new state
-    states[static_cast<size_t>(state)].enter(*this);
+    STATES[static_cast<size_t>(state)].enter(*this);
 }
 
 // Method to update the loop given the current state
-void Game::update_loop() { states[static_cast<size_t>(state)].update(*this); }
+void Game::update_loop() { STATES[static_cast<size_t>(state)].update(*this); }
 
 // Function to draw events onto game window
 void Game::draw() {

@@ -24,7 +24,7 @@ class Game {
         State update;
     };
     // We then make an array to stuff the data containers
-    std::array<StateTable, static_cast<size_t>(GameState::Count)> states;
+    std::array<StateTable, static_cast<size_t>(GameState::Count)> STATES;
 
   public:
     // Constructor - Game
