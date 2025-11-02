@@ -6,6 +6,7 @@ add_library(si_lib
     si_lib/obstacles/obstacle.cpp
     si_lib/ship/lasers.cpp
     si_lib/ship/spaceship.cpp
+    si_lib/ui/ui.cpp
 )
 
 find_package(raylib 3.0 REQUIRED)

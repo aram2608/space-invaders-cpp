@@ -3,6 +3,7 @@
 #include "aliens/mystery_ship.hpp"
 #include "obstacles/obstacle.hpp"
 #include "ship/spaceship.hpp"
+#include "ui/ui.hpp"
 
 #include <array>
 #include <unordered_map>
@@ -139,6 +140,7 @@ class Game {
     Sound aliens_sound;
 
     // UI component measurements
+    UI ui_;
     Texture2D ship_image;
     Font font;
     Vector2 high_scr_title_size;
@@ -150,6 +152,5 @@ class Game {
     Vector2 screen_center;
     Vector2 paused_txt;
     Color grey;
-    std::string level_display;
     Color yellow;
 };

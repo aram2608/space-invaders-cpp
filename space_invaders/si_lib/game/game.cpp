@@ -138,13 +138,16 @@ void Game::update_simulation() {
 
 // Method to bind the state tables at the start of the game
 void Game::bind_states() {
-    // We need to initialize all the state containers at once
-    // Each lambda stores the underlying logic needed to run each state
-    // We are not list initializing inside the array itself
-    // since that was incredibly unreadable
+    /*
+     * We need to initialize all the state containers at once
+     * Each lambda stores the underlying logic needed to run each state
+     * We are not list initializing inside the array itself
+     * since that was incredibly unreadable
+     * We are using dedicated constructors for each of the member variables
+     */
     StateTable TITLE = {
-        .enter = {[](Game &game) { /* nothing */ }},
-        .update = {[](Game &game) {
+        .enter = {[](Game &game) -> void { /* nothing */ }},
+        .update = {[](Game &game) -> void {
             if (IsKeyPressed(KEY_ENTER)) {
                 game.reset();
                 game.init();
@@ -153,11 +156,10 @@ void Game::bind_states() {
         }},
     };
     StateTable PLAYING = {
-        .enter = {[](Game &game) { PlayMusicStream(game.music); }},
-        .update = {[](Game &game) {
+        .enter = {[](Game &game) -> void { PlayMusicStream(game.music); }},
+        .update = {[](Game &game) -> void {
             if (IsKeyPressed(KEY_P)) {
                 game.set_state(GameState::Paused);
-                return;
             }
             game.update_simulation();
             if (game.lives <= 0) {
@@ -166,19 +168,19 @@ void Game::bind_states() {
         }},
     };
     StateTable PAUSE = {
-        .enter = {[](Game &game) { PauseMusicStream(game.music); }},
-        .update = {[](Game &game) {
+        .enter = {[](Game &game) -> void { PauseMusicStream(game.music); }},
+        .update = {[](Game &game) -> void {
             if (IsKeyPressed(KEY_ENTER)) {
                 game.set_state(GameState::Playing);
             }
         }},
     };
     StateTable GAMEOVER = {
-        .enter = {[](Game &game) {
+        .enter = {[](Game &game) -> void {
             PauseMusicStream(game.music);
             PlaySound(game.game_over_sound);
         }},
-        .update = {[](Game &game) {
+        .update = {[](Game &game) -> void {
             if (IsKeyPressed(KEY_ENTER)) {
                 game.reset();
                 game.init();
@@ -246,6 +248,7 @@ void Game::draw_loop() {
     using DrawFn = void (Game::*)();
 
     // We then create an array of pointers to the methods we want to dispatch
+    // We keep it closed to this scope and evaluate it at compile time
     static constexpr DrawFn table[] = {&Game::draw_title,     // Title
                                        &Game::draw_playing,   // Playing
                                        &Game::draw_paused,    // Paused
@@ -257,128 +260,63 @@ void Game::draw_loop() {
 
 // Function to draw the title screen
 void Game::draw_title() {
-    // Hard coded UI components
-    high_scr_title_size = MeasureTextEx(font, "HIGH SCORE", 34, 2);
-    title_size = MeasureTextEx(font, "SPACE INVADERS", 80, 2);
-    start_text_size = MeasureTextEx(font, "RETURN TO START GAME", 34, 2);
-
-    // Draw UI Components
-    ClearBackground(grey);
-    DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, yellow);
-
-    // Title screen text
-    DrawTextEx(font, "SPACE INVADERS",
-               {screen_center.x - title_size.x / 2, (screen_center.y - title_size.y / 2) - 50}, 80,
-               2, yellow);
-    DrawTextEx(
-        font, "RETURN TO START GAME",
-        {screen_center.x - start_text_size.x / 2, (screen_center.y - start_text_size.y / 2) + 20},
-        34, 2, yellow);
-    DrawTextEx(font, "HIGH SCORE",
-               {screen_center.x - high_scr_title_size.x / 2,
-                (screen_center.y - high_scr_title_size.y / 2) + 200},
-               34, 2, yellow);
-    // Formatting for high score loaded from file
-    std::string high_scr_txt = format_trail_zeros(high_score, 5);
-    Vector2 scr_txt_size = MeasureTextEx(font, high_scr_txt.c_str(), 34, 2);
-    DrawTextEx(font, high_scr_txt.c_str(),
-               {screen_center.x - scr_txt_size.x / 2, (screen_center.y - scr_txt_size.y / 2) + 230},
-               34, 2, yellow);
+    // We draw the base frame for the ui
+    ui_.draw_panel_background();
+    // We need to draw the proper text with the correct spacing
+    // The last float is the offset for the Y position
+    // The sizes are precomputed at run time since window size changes are disabled
+    ui_.draw_centered("SPACE INVADERS", screen_center, ui_.title_, ui_.title_px_, -50.0f);
+    ui_.draw_centered("RETURN TO START GAME", screen_center, ui_.start_, ui_.h2_px_, +20.0f);
+    ui_.draw_centered("HIGH SCORE", screen_center, ui_.high_, ui_.h2_px_, +200.0f);
+    // We need to fudge the x position for the screen cetner x position a bit
+    ui_.draw_centered(format_trail_zeros(high_score, 5).c_str(),
+                      Vector2{screen_center.x +39.0f, screen_center.y}, ui_.high_, ui_.h2_px_, +230.0f);
 }
 
 // Function to draw the paused screen
 void Game::draw_paused() {
-    // Hard coded UI components
-    paused_txt = MeasureTextEx(font, "PAUSED", 80, 2);
-    start_text_size = MeasureTextEx(font, "RETURN TO START GAME", 34, 2);
+    // We draw the base frame for the ui
+    ui_.draw_panel_background();
 
-    // Draw UI Components
-    ClearBackground(grey);
-    DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, yellow);
-    DrawLineEx({25, 730}, {775, 730}, 3, yellow);
-    std::string level_num = format_level(level);
-    std::string level_s = level_display + " " + level_num;
-    DrawTextEx(font, level_s.c_str(), {565, 740}, 34, 2, yellow);
+    // We need to draw our level badge while formatting the it to contain the
+    // correct number of zeros
+    ui_.draw_level_badge("LEVEL", format_level(level));
 
-    // Paused title
-    DrawTextEx(font, "PAUSED",
-               {screen_center.x - paused_txt.x / 2, (screen_center.y - paused_txt.y / 2) - 50}, 80,
-               2, yellow);
-    DrawTextEx(
-        font, "RETURN TO START GAME",
-        {screen_center.x - start_text_size.x / 2, (screen_center.y - start_text_size.y / 2) + 20},
-        34, 2, yellow);
+    // We can now draw the base text for paused screen
+    ui_.draw_centered("PAUSED", screen_center, ui_.paused_, ui_.title_px_, -50);
+    ui_.draw_centered("RETURN TO START GAME", screen_center, ui_.start_, ui_.h2_px_, +20);
 
-    // Lives remaining
-    float x = 50.0;
-    for (int i = 0; i < lives; i++) {
-        DrawTextureV(ship_image, {x, 745}, WHITE);
-        x += 50;
-    }
-
-    // Scoreboard
-    DrawTextEx(font, "SCORE", {50, 15}, 34, 2, yellow);
-    std::string score_txt = format_trail_zeros(score, 5);
-    DrawTextEx(font, score_txt.c_str(), {50, 40}, 34, 2, yellow);
-
-    DrawTextEx(font, "HIGH SCORE", {570, 15}, 34, 2, yellow);
-    std::string high_scr_txt = format_trail_zeros(high_score, 5);
-    DrawTextEx(font, high_scr_txt.c_str(), {655, 40}, 34, 2, yellow);
+    // Since a player may pause and leave the computer for a bit, it is nice to
+    // see their progress before restarting
+    ui_.draw_hud(ship_image, lives);
+    ui_.draw_scoreboard(format_trail_zeros(score, 5), format_trail_zeros(high_score, 5));
 }
 
 // Function to draw the game over screen
 void Game::draw_gameover() {
-    // Hard coded UI components
-    game_over_title_size = MeasureTextEx(font, "GAME OVER", 80, 2);
-    retry_text_size = MeasureTextEx(font, "RETURN TO TRY AGAIN", 34, 2);
-
-    // Draw UI Components
-    ClearBackground(grey);
-    DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, yellow);
+    // We need to draw the base fram for the ui
+    ui_.draw_panel_background();
 
     // Game over screen text
-    DrawTextEx(font, "GAME OVER",
-               {screen_center.x - game_over_title_size.x / 2,
-                (screen_center.y - game_over_title_size.y / 2) - 50},
-               80, 2, yellow);
-    DrawTextEx(
-        font, "RETURN TO TRY AGAIN",
-        {screen_center.x - retry_text_size.x / 2, (screen_center.y - retry_text_size.y / 2) + 20},
-        34, 2, yellow);
+    ui_.draw_game_over(screen_center);
 
     // Scoreboard
-    DrawTextEx(font, "SCORE", {50, 15}, 34, 2, yellow);
-    std::string score_txt = format_trail_zeros(score, 5);
-    DrawTextEx(font, score_txt.c_str(), {50, 40}, 34, 2, yellow);
+    ui_.draw_scoreboard(format_trail_zeros(score, 5));
 }
 
 // Function to draw the playing screen
 void Game::draw_playing() {
-    // Hard coded UI components
-    level_display = "LEVEL";
+    // We clear the background and draw the rounded lines
+    ui_.draw_panel_background();
 
-    // Draw UI Components
-    ClearBackground(grey);
-    DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, yellow);
-    DrawLineEx({25, 730}, {775, 730}, 3, yellow);
-    std::string level_num = format_level(level);
-    std::string level_s = level_display + " " + level_num;
-    DrawTextEx(font, level_s.c_str(), {565, 740}, 34, 2, yellow);
+    // While playing we draw the level and any level change that occures
+    ui_.draw_level_badge("LEVEL", format_level(level));
 
-    // Lives remaining
-    float x = 50.0;
-    for (int i = 0; i < lives; i++) {
-        DrawTextureV(ship_image, {x, 745}, WHITE);
-        x += 50;
-    }
+    // We draw the number of lives and the basic hud
+    ui_.draw_hud(ship_image, lives);
+
     // Scoreboard
-    DrawTextEx(font, "SCORE", {50, 15}, 34, 2, yellow);
-    std::string score_txt = format_trail_zeros(score, 5);
-    DrawTextEx(font, score_txt.c_str(), {50, 40}, 34, 2, yellow);
-
-    DrawTextEx(font, "HIGH SCORE", {570, 15}, 34, 2, yellow);
-    std::string high_scr_txt = format_trail_zeros(high_score, 5);
-    DrawTextEx(font, high_scr_txt.c_str(), {655, 40}, 34, 2, yellow);
+    ui_.draw_scoreboard(format_trail_zeros(score, 5), format_trail_zeros(high_score, 5));
 
     // Draw game assets
     draw();
