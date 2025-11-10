@@ -17,10 +17,10 @@ class Alien {
     // Function to get rectangle for aliens
     Rectangle get_rect();
 
-    int type;
-    Vector2 position;
+    int type_;
+    Vector2 position_;
     // Store alien images into an array, improves loading time
-    static Texture2D alien_images[3];
+    static Texture2D alien_images_[3];
 
   private:
 };

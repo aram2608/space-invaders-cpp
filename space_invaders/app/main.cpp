@@ -42,6 +42,8 @@ int main() {
     int window_w = 750;
     int window_h = 700;
 
+    SetTraceLogLevel(LOG_ERROR);
+
     // Game window Audio Device //
     // INITIALIZE FIRST BEFORE LOADING GPU RESOURCES //
     InitWindow(window_w + off_set, window_h + (2 * off_set), "C++ - Space Invaders");

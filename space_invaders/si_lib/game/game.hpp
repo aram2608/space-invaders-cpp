@@ -15,6 +15,8 @@ enum class GameState { Title, Playing, Paused, GameOver, Count };
 // Since we are storing lambdas with no capture, we don't have to use
 // std::function<void(SpaceSHip&, float)>
 // std::function allows capturing flexability later on but we dont really need it
+// we simply need to store a function pointer in this case after all
+// the () is important here for parsing, to prevent it from parsing as a void* instead
 using Action = void (*)(SpaceShip &, float);
 
 class Game {
@@ -41,6 +43,9 @@ class Game {
     Game(Game &&) = delete;
     // Delete move assignment operator
     Game &operator=(Game &&) = delete;
+
+    // Load assets at init
+    void load_assets();
 
     ///// UI FUNCTIONS //////
     void draw_loop();
@@ -75,14 +80,6 @@ class Game {
     // Function to update the events on screen
     void update_simulation();
     void set_state(GameState next);
-    // Function to handle title game state
-    void update_title();
-    // Function to handle playing game state
-    void update_playing();
-    // Function to handle gameover state
-    void update_gameover();
-    // Function to handle paused stated
-    void update_paused();
 
     void spawn_mystery_ship();
 
@@ -151,6 +148,4 @@ class Game {
     Vector2 gameover_scr_size;
     Vector2 screen_center;
     Vector2 paused_txt;
-    Color grey;
-    Color yellow;
 };

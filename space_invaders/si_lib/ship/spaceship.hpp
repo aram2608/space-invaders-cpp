@@ -27,9 +27,9 @@ class SpaceShip {
     ~SpaceShip();
 
   private:
-    float speed;
-    Texture2D image;
-    Vector2 position;
-    double fire_time;
-    Sound laser_sound;
+    float speed_;
+    Texture2D image_;
+    Vector2 position_;
+    double fire_time_;
+    Sound laser_sound_;
 };

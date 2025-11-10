@@ -7,21 +7,11 @@
 
 // Constructor - Game
 Game::Game() : keys{KEY_LEFT, KEY_RIGHT, KEY_SPACE} {
-    // Game assets
-    music = LoadMusicStream("audio/bgm_loud.ogg");
-    explosion_sound = LoadSound("audio/explosion.ogg");
-    game_over_sound = LoadSound("audio/game_over.ogg");
-    ship_hit_sound = LoadSound("audio/ship_hit.ogg");
-    aliens_sound = LoadSound("audio/alien_step.ogg");
+    // Load in our assets
+    load_assets();
 
-    // Textures for UI
-    ship_image = LoadTexture("assets/spaceship.png");
-    font = LoadFontEx("font/monogram.ttf", 64, 0, 0);
-
-    // Hard coded values for UI
+    // Calculation needed for our UI
     screen_center = {GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f};
-    grey = {29, 29, 27, 255};
-    yellow = {243, 216, 63, 255};
 
     // Initialize starting screen/keybinds
     title();
@@ -39,6 +29,19 @@ Game::~Game() {
     UnloadSound(aliens_sound);
     UnloadTexture(ship_image);
     UnloadFont(font);
+}
+
+void Game::load_assets() {
+    // Game assets
+    music = LoadMusicStream("audio/bgm_loud.ogg");
+    explosion_sound = LoadSound("audio/explosion.ogg");
+    game_over_sound = LoadSound("audio/game_over.ogg");
+    ship_hit_sound = LoadSound("audio/ship_hit.ogg");
+    aliens_sound = LoadSound("audio/alien_step.ogg");
+
+    // Textures for UI
+    ship_image = LoadTexture("assets/spaceship.png");
+    font = LoadFontEx("font/monogram.ttf", 64, 0, 0);
 }
 
 // Function to initalize the title screen
@@ -97,8 +100,9 @@ void Game::handle_input(float delta) {
 void Game::dispatch(int key, float delta) {
     // We do a quick check to see if the method is bound to the keymap
     // as an assurance
-    if (auto it = keymap.find(key); it != keymap.end())
+    if (auto it = keymap.find(key); it != keymap.end()) {
         it->second(ship, delta);
+    }
 }
 
 // Function to update the events on screen
@@ -243,8 +247,6 @@ void Game::draw_loop() {
 
     // We first typdef or declare an alias for a pointer to a non static member
     // function in the game class that takes no parameters and returns a void
-    // Seems a bit like magic and i dont fully understand it but it works pretty
-    // well
     using DrawFn = void (Game::*)();
 
     // We then create an array of pointers to the methods we want to dispatch
@@ -270,7 +272,8 @@ void Game::draw_title() {
     ui_.draw_centered("HIGH SCORE", screen_center, ui_.high_, ui_.h2_px_, +200.0f);
     // We need to fudge the x position for the screen cetner x position a bit
     ui_.draw_centered(format_trail_zeros(high_score, 5).c_str(),
-                      Vector2{screen_center.x +39.0f, screen_center.y}, ui_.high_, ui_.h2_px_, +230.0f);
+                      Vector2{screen_center.x + 39.0f, screen_center.y}, ui_.high_, ui_.h2_px_,
+                      +230.0f);
 }
 
 // Function to draw the paused screen
@@ -326,7 +329,7 @@ void Game::draw_playing() {
 void Game::delete_laser() {
     // Iterator to loop through the vector and remove any inactive ship lasers
     for (auto it = ship.lasers.begin(); it != ship.lasers.end();) {
-        if (!it->active) {
+        if (!it->active_) {
             it = ship.lasers.erase(it);
         } else {
             ++it;
@@ -335,7 +338,7 @@ void Game::delete_laser() {
 
     // Iterator to loop through the vector and remove any inactive alien lasers
     for (auto it = al_lasers.begin(); it != al_lasers.end();) {
-        if (!it->active) {
+        if (!it->active_) {
             it = al_lasers.erase(it);
         } else {
             ++it;
@@ -406,13 +409,13 @@ void Game::move_aliens(float delta) {
     // Move aliens down once the edge of screen is met
     for (auto &alien : aliens) {
         // Right side of screen
-        if (alien.position.x + alien.alien_images[alien.type - 1].width > GetScreenWidth() - 25) {
+        if (alien.position_.x + alien.alien_images_[alien.type_ - 1].width > GetScreenWidth() - 25) {
             alien_dir = -1 * 100.0f * delta;
             aliens_down(4);
             PlaySound(aliens_sound);
         }
         // Left side of screen
-        if (alien.position.x < 25) {
+        if (alien.position_.x < 25) {
             alien_dir = 1 * 100.0f * delta;
             aliens_down(4);
             PlaySound(aliens_sound);
@@ -426,7 +429,7 @@ void Game::move_aliens(float delta) {
 void Game::aliens_down(int distance) {
     // Iterate over vector of aliens and update y_coord for each alien
     for (auto &alien : aliens) {
-        alien.position.y += distance;
+        alien.position_.y += distance;
     }
 }
 
@@ -442,8 +445,8 @@ void Game::aliens_shoot() {
 
         // Vector {x_coord, y_coord} calculations with a laser speed of 300.0f
         al_lasers.emplace_back(
-            Vector2{alien.position.x + alien.alien_images[alien.type - 1].width / 2,
-                    alien.position.y + alien.alien_images[alien.type - 1].height},
+            Vector2{alien.position_.x + alien.alien_images_[alien.type_ - 1].width / 2,
+                    alien.position_.y + alien.alien_images_[alien.type_ - 1].height},
             300.0f);
 
         // Update last fire time given completion of previous code
@@ -461,16 +464,16 @@ void Game::check_collisions() {
             if (CheckCollisionRecs(it->get_rect(), laser.get_rect())) {
                 PlaySound(explosion_sound);
                 // Scoring for alien types
-                if (it->type == 1) {
+                if (it->type_ == 1) {
                     score += 100;
-                } else if (it->type == 2) {
+                } else if (it->type_ == 2) {
                     score += 200;
-                } else if (it->type == 3) {
+                } else if (it->type_ == 3) {
                     score += 300;
                 }
                 score_check();
                 it = aliens.erase(it);
-                laser.active = false;
+                laser.active_ = false;
             } else {
                 ++it;
             }
@@ -481,7 +484,7 @@ void Game::check_collisions() {
             while (it != obs.blocks.end()) {
                 if (CheckCollisionRecs(it->get_rect(), laser.get_rect())) {
                     it = obs.blocks.erase(it);
-                    laser.active = false;
+                    laser.active_ = false;
                 } else {
                     ++it;
                 }
@@ -490,7 +493,7 @@ void Game::check_collisions() {
         // Check laser/mystery ship collisions
         if (CheckCollisionRecs(laser.get_rect(), mystery_ship.get_rect())) {
             PlaySound(explosion_sound);
-            laser.active = false;
+            laser.active_ = false;
             mystery_ship.alive = false;
             score += 500;
             score_check();
@@ -500,7 +503,7 @@ void Game::check_collisions() {
     for (auto &laser : al_lasers) {
         // Check for ship/laser collisions
         if (CheckCollisionRecs(laser.get_rect(), ship.get_rect())) {
-            laser.active = false;
+            laser.active_ = false;
             PlaySound(ship_hit_sound);
             --lives;
         }
@@ -510,7 +513,7 @@ void Game::check_collisions() {
             while (it != obs.blocks.end()) {
                 if (CheckCollisionRecs(it->get_rect(), laser.get_rect())) {
                     it = obs.blocks.erase(it);
-                    laser.active = false;
+                    laser.active_ = false;
                 } else {
                     ++it;
                 }

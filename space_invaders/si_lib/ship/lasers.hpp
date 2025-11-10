@@ -12,9 +12,9 @@ class Laser {
     // Function to get rectangle for lasers
     Rectangle get_rect();
 
-    bool active;
+    bool active_;
 
   private:
-    Vector2 position;
-    float speed;
+    Vector2 position_;
+    float speed_;
 };
